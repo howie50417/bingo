@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0029)http://fual.jakou.com/cal.htm -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="author" content="七貓">
+<meta name="keywords" content="Ragnarok,ragnarok,Ro,ro,仙境傳說,技能,技能模擬器,技能模擬,fual,fual.erufa.com,三轉,盧恩騎士,咒術士,遊俠,機械工匠,十字斬首者,大主教,皇家禁衛隊,妖術師,宮廷樂師,浪姬舞者,基因學者,魅影追縱者,修羅">
+<meta name="URL" content="http://fual.jakou.com">
+<meta name="robots" content="index,follow">
+<meta name="description" content="仙境傳說技能模擬器，包含三轉技能說明以及其技能樹，原fual.erufa.com，現移機至無限流空間為大家繼續服務，「Ragnarok Online」技能模擬器。（擴充職業／3轉職業）">
+<meta http-equiv="Content-Language" content="zh-tw">
+
+<title>Ragnarok Cosmos</title>
+<!--
+[我是註解，請不要把我吃掉]
+************
+您好，中文化或修改程式碼可能是簡單的
+但畢竟這也是需要花大量時間下去的，請您能尊重、體諒維護者的辛苦
+轉載，煩請著名 Ragnarok Cosmos (http://fual.jakou.com/index.htm)，謝謝
+七貓 lynn510piyo@gmail.com
+************
+-->
+
+
+<script type="text/javascript">
+function loadScript(url, callback){
+	var script = document.createElement("script");
+	script.type = "text/javascript";
+	if (script.readyState){ //IE
+		script.onreadystatechange = function(){
+			if (script.readyState == "loaded" || script.readyState == "complete"){
+				script.onreadystatechange = null;
+				callback();
+			}
+		};
+	} else { //Others
+		script.onload = function(){
+			callback();
+		};
+	}
+	script.src = url;
+	document.getElementsByTagName("head")[0].appendChild(script);
+}
+</script>
+
+<script type="text/javascript">
+var n_A_JOB = 0;
+var n_Sanji;
+var i;
+function ClickJob(n) {
+        n_A_JobSet();
+        n = n_A_JOB;
+		var n_A_JobLV = eval(document.calcForm.A_JobLV.value);
+		var A_BaseLV = eval(document.calcForm.A_BaseLV);
+		var A_STR = eval(document.calcForm.A_STR);
+		var A_AGI = eval(document.calcForm.A_AGI);
+		var A_VIT = eval(document.calcForm.A_VIT);
+		var A_INT = eval(document.calcForm.A_INT);
+		var A_DEX = eval(document.calcForm.A_DEX);
+		var A_LUK = eval(document.calcForm.A_LUK);
+		
+        var w = 0;
+        if (n == 0 || n == 34) w = 10;
+        else if (n <= 19 || (35 <= n && n <= 43) || (46 <= n && n <= 72)) w = 60;
+        else if (n == 20) w = 99;
+        else w = 70;
+        var len = eval(document.calcForm.A_JobLV.length);
+		var A_JobLV = eval(document.calcForm.A_JobLV);
+        if (len > w) {
+            for (i = len; w != i; i--) A_JobLV.options[i - 1] = null;
+        } else if (len < w) {
+            for (i = len; w != i; i++) A_JobLV.options[i] = new Option(i + 1, i + 1);
+        }
+        A_JobLV.value = 1;
+        var w;
+        if (n_A_JOB == 20) w = 105;
+        else if (n_Sanji == 1) w = 85;
+        else w = 99;
+        var len = A_BaseLV.length;
+        if (len != w) {
+            if (len > w) for (i = len; w != i; i--) A_BaseLV.options[i - 1] = null;
+            if (n_A_JOB == 20) {
+                for (i = 0;
+                (w + 1) != i; i++) A_BaseLV.options[i] = new Option(i + 45, i + 45);
+            } else if (n_Sanji == 1) {
+                for (i = 0;
+                (w + 1) != i; i++) A_BaseLV.options[i] = new Option(i + 90, i + 90);
+            } else {
+                for (i = 0; w != i; i++) A_BaseLV.options[i] = new Option(i + 1, i + 1);
+            }
+        }
+        if (n_A_JOB == 20) A_BaseLV.value = 45;
+        else if (n_Sanji) A_BaseLV.value = 90;
+        else A_BaseLV.value = 1;
+        var w;
+        if (n_Sanji == 1 || n_A_JOB == 20) w = 130;
+        else w = 99;
+        var len = A_STR.length;
+        if (len > w) {
+            for (i = len; w != i; i--) {
+                A_STR.options[i - 1] = null;
+                A_AGI.options[i - 1] = null;
+                A_VIT.options[i - 1] = null;
+                A_INT.options[i - 1] = null;
+                A_DEX.options[i - 1] = null;
+                A_LUK.options[i - 1] = null;
+            }
+        } else if (len < w) {
+            for (i = len; w != i; i++) {
+                A_STR.options[i] = new Option(i + 1, i + 1);
+                A_AGI.options[i] = new Option(i + 1, i + 1);
+                A_VIT.options[i] = new Option(i + 1, i + 1);
+                A_INT.options[i] = new Option(i + 1, i + 1);
+                A_DEX.options[i] = new Option(i + 1, i + 1);
+                A_LUK.options[i] = new Option(i + 1, i + 1);
+            }
+        }
+        A_STR.value = 1;
+        A_AGI.value = 1;
+        A_VIT.value = 1;
+        A_INT.value = 1;
+        A_DEX.value = 1;
+        A_LUK.value = 1;
+
+}
+function StCalc(nSC) {
+    with(document.calcForm) {
+        var i;
+        n_A_STR = eval(A_STR.value);
+        n_A_AGI = eval(A_AGI.value);
+        n_A_VIT = eval(A_VIT.value);
+        n_A_DEX = eval(A_DEX.value);
+        n_A_INT = eval(A_INT.value);
+        n_A_LUK = eval(A_LUK.value);
+        var StPoint = 0;
+        for (i = 2; i <= n_A_STR; i++) StPoint += StCalc2(i);
+        for (i = 2; i <= n_A_AGI; i++) StPoint += StCalc2(i);
+        for (i = 2; i <= n_A_VIT; i++) StPoint += StCalc2(i);
+        for (i = 2; i <= n_A_INT; i++) StPoint += StCalc2(i);
+        for (i = 2; i <= n_A_DEX; i++) StPoint += StCalc2(i);
+        for (i = 2; i <= n_A_LUK; i++) StPoint += StCalc2(i);
+        n_A_BaseLV = eval(A_BaseLV.value);
+        n_A_JobSet();
+        var wStPoint;
+        if (n_Tensei) wStPoint = 100;
+        else wStPoint = 48;
+        var wMAXLV;
+        if (n_Sanji || n_A_JOB == 20) wMAXLV = 175;
+        else wMAXLV = 99;
+        if (nSC == 1 || BLVauto.checked == 0) {
+            for (i = 1; i < n_A_BaseLV; i++) {
+                if (i <= 100) wStPoint += Math.floor(i / 5) + 3;
+                else if (i <= 150) wStPoint += Math.floor((i - 100) / 10) + 23;
+                else wStPoint += Math.floor((i - 150) / 7) + 28;
+            }
+        } else {
+            if (n_Sanji == 0 && n_A_JOB != 20) {
+                for (i = 1; StPoint > wStPoint && i < wMAXLV; i++) wStPoint += Math.floor(i / 5) + 3;
+            } else {
+                if (n_A_JOB == 20) {
+                    wStPoint += 360 - 48;
+                    i = 45;
+                } else if (n_Sanji) {
+                    wStPoint += 1225;
+                    i = 99;
+                }
+                for (i = i; StPoint > wStPoint && i < wMAXLV; i++) {
+                    if (i <= 100) wStPoint += Math.floor(i / 5) + 3;
+                    else if (i <= 150) wStPoint += Math.floor((i - 100) / 10) + 23;
+                    else wStPoint += Math.floor((i - 150) / 7) + 28;
+                }
+            }
+            A_BaseLV.value = i;
+        }
+		document.getElementById("A_STPOINT").innerHTML=wStPoint - StPoint
+    }
+} 
+function n_A_JobSet() {
+    n_A_JOB = eval(document.calcForm.A_JOB.value);
+    if (46 <= n_A_JOB && n_A_JOB <= 58) {
+        n_Tensei = 1;
+        n_Sanji = 1;
+        return;
+    } else {
+        n_Sanji = 0;
+    }
+    if (21 <= n_A_JOB && n_A_JOB <= 40) {
+        n_Tensei = 1;
+    } else n_Tensei = 0;
+}
+
+function StCalc2(nS) {
+    if (nS <= 100) return Math.floor((nS - 2) / 10) + 2;
+    if (nS <= 105) return 16;
+    if (nS <= 110) return 20;
+    if (nS <= 115) return 24;
+    if (nS <= 120) return 28;
+    if (nS <= 125) return 32;
+    if (nS <= 130) return 36;
+}
+document.write("修改自 Ragnarok Cosmos (http://fual.jakou.com/index.htm)  七貓 lynn510piyo@gmail.com");
+</script><!-- Choose Js End-->
+
+
+<form name="calcForm">
+
+<table border="1">
+<tbody><tr><td colspan="6" bgcolor="#DDDDFF"><span id="nm01">基本素質</span>　　　　<input name="BLVauto"  type="checkbox"><span id="nm02">BaseLV自動調整</span></td></tr>
+<tr>
+<td id="nm03">LV</td><td><select name="A_BaseLV" onchange="StCalc(1)"><option value="90">90</option><option value="91">91</option><option value="92">92</option><option value="93">93</option><option value="94">94</option><option value="95">95</option><option value="96">96</option><option value="97">97</option><option value="98">98</option><option value="99">99</option><option value="100">100</option><option value="101">101</option><option value="102">102</option><option value="103">103</option><option value="104">104</option><option value="105">105</option><option value="106">106</option><option value="107">107</option><option value="108">108</option><option value="109">109</option><option value="110">110</option><option value="111">111</option><option value="112">112</option><option value="113">113</option><option value="114">114</option><option value="115">115</option><option value="116">116</option><option value="117">117</option><option value="118">118</option><option value="119">119</option><option value="120">120</option><option value="121">121</option><option value="122">122</option><option value="123">123</option><option value="124">124</option><option value="125">125</option><option value="126">126</option><option value="127">127</option><option value="128">128</option><option value="129">129</option><option value="130">130</option><option value="131">131</option><option value="132">132</option><option value="133">133</option><option value="134">134</option><option value="135">135</option><option value="136">136</option><option value="137">137</option><option value="138">138</option><option value="139">139</option><option value="140">140</option><option value="141">141</option><option value="142">142</option><option value="143">143</option><option value="144">144</option><option value="145">145</option><option value="146">146</option><option value="147">147</option><option value="148">148</option><option value="149">149</option><option value="150">150</option></select></td>
+<td id="nm04">JobLV</td><td><select name="A_JobLV" onchange=""><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option></select></td>
+<td id="nm05">職業</td><td><select name="A_JOB" onchange="ClickJob(this[this.selectedIndex].value) | StCalc()"><option value="0">初學者</option><option value="1">劍士</option><option value="2">盜賊</option><option value="3">服事</option><option value="4">弓箭手</option><option value="5">魔法師</option><option value="6">商人</option><option value="7">騎士</option><option value="8">刺客</option><option value="9">祭司</option><option value="10">獵人</option><option value="11">巫師</option><option value="12">鐵匠</option><option value="13">十字軍</option><option value="14">流氓</option><option value="15">武道家</option><option value="16">詩人</option><option value="17">舞孃</option><option value="18">賢者</option><option value="19">鍊金術師</option><option value="20">超級初學者</option><option value="21">騎士領主</option><option value="22">十字刺客</option><option value="23">神官</option><option value="24">神射手</option><option value="25">超魔導師</option><option value="26">神工匠</option><option value="27">聖殿十字軍</option><option value="28">神行太保</option><option value="29">武術宗師</option><option value="30">搞笑藝人</option><option value="31">冷豔舞姬</option><option value="32">智者</option><option value="33">創造者</option><option value="34">進階初學者</option><option value="35">進階劍士</option><option value="36">進階盜賊</option><option value="37">進階服事</option><option value="38">進階弓箭手</option><option value="39">進階魔法師</option><option value="40">進階商人</option><option value="41">跆拳</option><option value="42">拳聖</option><option value="43">悟靈士</option><option value="44">忍者</option><option value="45">神槍手</option><option value="46">盧恩騎士</option><option value="47">十字斬首者</option><option value="48">大主教</option><option value="49">遊俠</option><option value="50">咒術士</option><option value="51">機械工匠</option><option value="52">皇家禁衛軍</option><option value="53">魅影追蹤者</option><option value="54">修羅</option><option value="55">宮廷樂師</option><option value="56">浪姬舞者</option><option value="57">妖術師</option><option value="58">基因學者</option></select></td>
+</tr>
+<tr>
+<td id="nm06">STR</td><td><select name="A_STR" onchange="StCalc()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option><option value="76">76</option><option value="77">77</option><option value="78">78</option><option value="79">79</option><option value="80">80</option><option value="81">81</option><option value="82">82</option><option value="83">83</option><option value="84">84</option><option value="85">85</option><option value="86">86</option><option value="87">87</option><option value="88">88</option><option value="89">89</option><option value="90">90</option><option value="91">91</option><option value="92">92</option><option value="93">93</option><option value="94">94</option><option value="95">95</option><option value="96">96</option><option value="97">97</option><option value="98">98</option><option value="99">99</option><option value="100">100</option><option value="101">101</option><option value="102">102</option><option value="103">103</option><option value="104">104</option><option value="105">105</option><option value="106">106</option><option value="107">107</option><option value="108">108</option><option value="109">109</option><option value="110">110</option><option value="111">111</option><option value="112">112</option><option value="113">113</option><option value="114">114</option><option value="115">115</option><option value="116">116</option><option value="117">117</option><option value="118">118</option><option value="119">119</option><option value="120">120</option></select><span id="A_STRp">+0</span></td>
+<td id="nm07">AGI</td><td><select name="A_AGI" onchange="StCalc()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option><option value="76">76</option><option value="77">77</option><option value="78">78</option><option value="79">79</option><option value="80">80</option><option value="81">81</option><option value="82">82</option><option value="83">83</option><option value="84">84</option><option value="85">85</option><option value="86">86</option><option value="87">87</option><option value="88">88</option><option value="89">89</option><option value="90">90</option><option value="91">91</option><option value="92">92</option><option value="93">93</option><option value="94">94</option><option value="95">95</option><option value="96">96</option><option value="97">97</option><option value="98">98</option><option value="99">99</option><option value="100">100</option><option value="101">101</option><option value="102">102</option><option value="103">103</option><option value="104">104</option><option value="105">105</option><option value="106">106</option><option value="107">107</option><option value="108">108</option><option value="109">109</option><option value="110">110</option><option value="111">111</option><option value="112">112</option><option value="113">113</option><option value="114">114</option><option value="115">115</option><option value="116">116</option><option value="117">117</option><option value="118">118</option><option value="119">119</option><option value="120">120</option></select><span id="A_AGIp">+1</span></td>
+<td id="nm08">VIT</td><td><select name="A_VIT" onchange="StCalc()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option><option value="76">76</option><option value="77">77</option><option value="78">78</option><option value="79">79</option><option value="80">80</option><option value="81">81</option><option value="82">82</option><option value="83">83</option><option value="84">84</option><option value="85">85</option><option value="86">86</option><option value="87">87</option><option value="88">88</option><option value="89">89</option><option value="90">90</option><option value="91">91</option><option value="92">92</option><option value="93">93</option><option value="94">94</option><option value="95">95</option><option value="96">96</option><option value="97">97</option><option value="98">98</option><option value="99">99</option><option value="100">100</option><option value="101">101</option><option value="102">102</option><option value="103">103</option><option value="104">104</option><option value="105">105</option><option value="106">106</option><option value="107">107</option><option value="108">108</option><option value="109">109</option><option value="110">110</option><option value="111">111</option><option value="112">112</option><option value="113">113</option><option value="114">114</option><option value="115">115</option><option value="116">116</option><option value="117">117</option><option value="118">118</option><option value="119">119</option><option value="120">120</option></select><span id="A_VITp">+0</span></td>
+</tr>
+<tr>
+<td id="nm010">INT</td><td><select name="A_INT" onchange="StCalc()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option><option value="76">76</option><option value="77">77</option><option value="78">78</option><option value="79">79</option><option value="80">80</option><option value="81">81</option><option value="82">82</option><option value="83">83</option><option value="84">84</option><option value="85">85</option><option value="86">86</option><option value="87">87</option><option value="88">88</option><option value="89">89</option><option value="90">90</option><option value="91">91</option><option value="92">92</option><option value="93">93</option><option value="94">94</option><option value="95">95</option><option value="96">96</option><option value="97">97</option><option value="98">98</option><option value="99">99</option><option value="100">100</option><option value="101">101</option><option value="102">102</option><option value="103">103</option><option value="104">104</option><option value="105">105</option><option value="106">106</option><option value="107">107</option><option value="108">108</option><option value="109">109</option><option value="110">110</option><option value="111">111</option><option value="112">112</option><option value="113">113</option><option value="114">114</option><option value="115">115</option><option value="116">116</option><option value="117">117</option><option value="118">118</option><option value="119">119</option><option value="120">120</option></select><span id="A_INTp">+0</span></td>
+<td id="nm09">DEX</td><td><select name="A_DEX" onchange="StCalc()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option><option value="76">76</option><option value="77">77</option><option value="78">78</option><option value="79">79</option><option value="80">80</option><option value="81">81</option><option value="82">82</option><option value="83">83</option><option value="84">84</option><option value="85">85</option><option value="86">86</option><option value="87">87</option><option value="88">88</option><option value="89">89</option><option value="90">90</option><option value="91">91</option><option value="92">92</option><option value="93">93</option><option value="94">94</option><option value="95">95</option><option value="96">96</option><option value="97">97</option><option value="98">98</option><option value="99">99</option><option value="100">100</option><option value="101">101</option><option value="102">102</option><option value="103">103</option><option value="104">104</option><option value="105">105</option><option value="106">106</option><option value="107">107</option><option value="108">108</option><option value="109">109</option><option value="110">110</option><option value="111">111</option><option value="112">112</option><option value="113">113</option><option value="114">114</option><option value="115">115</option><option value="116">116</option><option value="117">117</option><option value="118">118</option><option value="119">119</option><option value="120">120</option></select><span id="A_DEXp">+0</span></td>
+<td id="nm011">LUK</td><td><select name="A_LUK" onchange="StCalc()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option><option value="76">76</option><option value="77">77</option><option value="78">78</option><option value="79">79</option><option value="80">80</option><option value="81">81</option><option value="82">82</option><option value="83">83</option><option value="84">84</option><option value="85">85</option><option value="86">86</option><option value="87">87</option><option value="88">88</option><option value="89">89</option><option value="90">90</option><option value="91">91</option><option value="92">92</option><option value="93">93</option><option value="94">94</option><option value="95">95</option><option value="96">96</option><option value="97">97</option><option value="98">98</option><option value="99">99</option><option value="100">100</option><option value="101">101</option><option value="102">102</option><option value="103">103</option><option value="104">104</option><option value="105">105</option><option value="106">106</option><option value="107">107</option><option value="108">108</option><option value="109">109</option><option value="110">110</option><option value="111">111</option><option value="112">112</option><option value="113">113</option><option value="114">114</option><option value="115">115</option><option value="116">116</option><option value="117">117</option><option value="118">118</option><option value="119">119</option><option value="120">120</option></select><span id="A_LUKp">+0</span></td>
+</tr>
+</tbody></table>
+<table border="1">
+<tbody><tr><td><span id="nm012">殘餘點數</span></td><td><span id="A_STPOINT">1325</span></td></tr>
+</tbody></table>
+</form>
+
+</body></html>

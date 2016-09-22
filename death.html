@@ -1,0 +1,127 @@
+<html>
+<head>
+	<title> Thanatos Tower </title>
+	<script src="ZeroClipboard.js"></script>
+	<script>
+		var clip = null;
+		function init() {
+			clip = new ZeroClipboard.Client();
+			clip.setHandCursor(true);  	
+			clip.addEventListener('mouseOver', function (client) {
+				clip.setText(chooseOn);
+			});
+			clip.glue('demo');
+		}
+	</script>
+	<meta charset=UTF-8>
+</head>
+<body onLoad="init()">
+
+<select id="mySelect" size="10" onChange="selectFunction()"></select>
+<br>
+<input type="text" id="mychoo" onChange="mychoo()"/>
+<input type="button" value="update" onclick="mychoo()"/>
+<br>
+<p id="demo">Choose</p>
+<button type="button" onclick="reset()">Reset</button>
+<br>
+<button type="button" onclick="AB(0,0,1)">0A</button>
+<button type="button" onclick="AB(1,0,1)">1A</button>
+<button type="button" onclick="AB(2,0,1)">2A</button>
+<button type="button" onclick="AB(3,0,1)">3A</button>
+<br>
+<button type="button" onclick="AB(0,0,2)">0B</button>
+<button type="button" onclick="AB(0,1,2)">1B</button>
+<button type="button" onclick="AB(0,2,2)">2B</button>
+<button type="button" onclick="AB(0,3,2)">3B</button>
+<br>
+<button id="key_r" type="button" onclick="copy1('紅色鑰匙')">紅色鑰匙</button>
+<button id="key_y" type="button" onclick="copy1('黃色鑰匙')">黃色鑰匙</button>
+<br>
+<button id="key_1" type="button" onclick="copy1('悲哀的碎片')">悲哀的碎片</button>
+<button id="key_2" type="button" onclick="copy1('苦惱的碎片')">苦惱的碎片</button>
+<br>
+<button id="key_3" type="button" onclick="copy1('絕望的碎片')">絕望的碎片</button>
+<button id="key_4" type="button" onclick="copy1('憎恨的碎片')">憎恨的碎片</button>
+<script>
+function AB(A,B,option){
+	var x=document.getElementById("mySelect").options;
+	var out = '';
+    for (i in x) {
+		if(isNaN(i))
+			continue;
+		if(option==1)
+			if(checkA(x[i].text,chooseOn)!=A)
+				continue;
+		if(option==2)
+			if(checkB(x[i].text,chooseOn)!=B)
+				continue;
+		out += '<option>' + x[i].text + '</option>';
+    }
+    document.getElementById("mySelect").innerHTML = out;
+}
+function checkA(x,y){
+	var a=x%10,b=parseInt(x/10)%10,c=parseInt(x/100)%10;
+	var d=y%10,e=parseInt(y/10)%10,f=parseInt(y/100)%10;
+	var count=0;
+	if(a==d)count++;
+	if(b==e)count++;
+	if(c==f)count++;
+	return count;
+}
+function checkB(x,y){
+	var a=x%10,b=parseInt(x/10)%10,c=parseInt(x/100)%10;
+	var d=y%10,e=parseInt(y/10)%10,f=parseInt(y/100)%10;
+	var count=0;
+	if(a==e||a==f)count++;
+	if(b==d||b==f)count++;
+	if(c==d||c==e)count++;
+	return count;
+}
+function selectFunction(){
+	var x=document.getElementById("mySelect");
+	chooseOn=x.options[x.selectedIndex].text;
+	document.getElementById("demo").innerHTML=chooseOn;
+}
+function reset(){
+	var out = '',chooseOn;
+    for (i = 0; i < 1000; i++) {
+		var a=i%10,b=parseInt(i/10)%10,c=parseInt(i/100)%10;
+		if(a==b||a==c||b==c||a==0||b==0||c==0)continue;
+		out += '<option>' + i + '</option>';
+    }
+    document.getElementById("mySelect").innerHTML = out;
+}
+function copy1(txt){
+	chooseOn=txt;
+	document.getElementById("demo").innerHTML=chooseOn;
+}
+function mychoo(){
+	chooseOn=document.getElementById("mychoo").value;
+}
+
+reset();
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
