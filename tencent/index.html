@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>騰訊推流</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body>
+    <div id="id_local_video" style="width:100%;height:500px;display:flex;align-items:center;justify-content:center;"></div>
+
+    <script src="https://imgcache.qq.com/open/qcloud/live/webrtc/js/TXLivePusher-1.0.2.min.js" charset="utf-8"></script>
+
+    <script>
+        var livePusher = new TXLivePusher();
+        livePusher.setRenderView('id_local_video');
+        document.getElementById('id_local_video').getElementsByTagName('video')[0].muted = false;
+        // 设置视频质量
+        livePusher.setVideoQuality('720p');
+        // 设置音频质量
+        livePusher.setAudioQuality('standard');
+        // 自定义设置帧率
+        livePusher.setProperty('setVideoFPS', 25);
+        // 打开摄像头
+        livePusher.startCamera();
+        // 打开麦克风
+        livePusher.startMicrophone();
+        var hasVideo = false;
+        var hasAudio = false;
+        var isPush = false;
+        livePusher.setObserver({
+            onCaptureFirstAudioFrame: function() {
+                hasAudio = true;
+                if (hasVideo && !isPush) {
+                    console.log('hasAudio = true');  
+                    isPush = true;
+                    livePusher.startPush('webrtc://181151.push.tlivecloud.com/live/test1?txSecret=ec4bb0fb73c6c573483d12dc8f3fbf19&txTime=642673B1');
+                }
+            },
+            onCaptureFirstVideoFrame: function() {
+                hasVideo = true;
+                if (hasAudio && !isPush) {
+                    console.log('hasVideo = true');  
+                    isPush = true;
+                    livePusher.startPush('webrtc://181151.push.tlivecloud.com/live/test1?txSecret=ec4bb0fb73c6c573483d12dc8f3fbf19&txTime=642673B1');
+                }
+            },
+            // 推流警告信息
+            onWarning: function(code, msg) {
+                console.log(code, msg);
+            },
+            // 推流连接状态
+            onPushStatusUpdate: function(status, msg) {
+                console.log(status, msg);
+            },
+            // 推流统计数据
+            onStatisticsUpdate: function(data) {
+                console.log('video fps is ' + data.video.framesPerSecond);
+            }
+        });
+        TXLivePusher.checkSupport().then(function(data) {  
+            // 是否支持WebRTC  
+            if (data.isWebRTCSupported) {    
+                console.log('WebRTC Support');  
+            } else {    
+                console.log('WebRTC Not Support');  
+            }  
+            // 是否支持H264编码  
+            if (data.isH264EncodeSupported) {    
+                console.log('H264 Encode Support');  
+            } else {    
+                console.log('H264 Encode Not Support');  
+            }
+        });
+        // console.log('startPush 2'); 
+        // livePusher.startPush('webrtc://181151.push.tlivecloud.com/live/test1?txSecret=ec4bb0fb73c6c573483d12dc8f3fbf19&txTime=642673B1');
+        // console.log('startPush'); 
+</script>
+</body>
+</html>
