@@ -80,17 +80,20 @@
         // 获取设备列表
         var camera_device_id_list = []
         var camera_index = 0
-        deviceManager.getDevicesList().then(function(data) {
-            console.log('getDevicesList()');
-            data.forEach(function(device) {
-                console.log(device);
-                if (device.type == 'video') {
-                    camera_device_id_list.push(device.deviceId);
-                }
-            });
-        });
         // 切换摄像头设备
-        function switch_camera() {
+        async function switch_camera() {
+            
+            if (camera_device_id_list.length == 0) {
+                var data = await deviceManager.getDevicesList();
+                console.log('getDevicesList()');
+                data.forEach(function(device) {
+                    console.log(device);
+                    if (device.type == 'video' && device.deviceId) {
+                        camera_device_id_list.push(device.deviceId);
+                    }
+                });
+            }
+
             camera_index = (camera_index + 1) % camera_device_id_list.length;
             console.log(camera_device_id_list[camera_index]);
             deviceManager.switchCamera(camera_device_id_list[camera_index]);
