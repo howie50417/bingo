@@ -96,7 +96,10 @@
 
             camera_index = (camera_index + 1) % camera_device_id_list.length;
             console.log(camera_device_id_list[camera_index]);
-            deviceManager.switchCamera();
+            livePusher.stopPush()
+            livePusher.startCamera(camera_device_id_list[camera_index]);
+            livePusher.startPush('webrtc://181151.push.tlivecloud.com/live/test1?txSecret=ec4bb0fb73c6c573483d12dc8f3fbf19&txTime=642673B1');
+            // deviceManager.switchCamera();
         }
         var vConsole = new VConsole();
 </script>
