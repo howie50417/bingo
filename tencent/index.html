@@ -8,7 +8,7 @@
 </head>
 <body>
     <div id="id_local_video" style="width:100%;height:500px;display:flex;align-items:center;justify-content:center;"></div>
-
+    <button onclick="switch_camera()">切换摄像头</button>
     <script src="https://imgcache.qq.com/open/qcloud/live/webrtc/js/TXLivePusher-1.0.2.min.js" charset="utf-8"></script>
 
     <script>
@@ -74,7 +74,26 @@
         });
         // console.log('startPush 2'); 
         // livePusher.startPush('webrtc://181151.push.tlivecloud.com/live/test1?txSecret=ec4bb0fb73c6c573483d12dc8f3fbf19&txTime=642673B1');
-        // console.log('startPush'); 
+        // console.log('startPush');
+        var deviceManager = livePusher.getDeviceManager();
+        // 获取设备列表
+        var camera_device_id_list = []
+        var camera_index = 0
+        deviceManager.getDevicesList().then(function(data) {
+            console.log('getDevicesList()');
+            data.forEach(function(device) {
+                console.log(device);
+                if (device.type == 'video') {
+                    camera_device_id_list.push(device.deviceId);
+                }
+            });
+        });
+        // 切换摄像头设备
+        function switch_camera() {
+            camera_index = (camera_index + 1) % camera_device_id_list.length;
+            console.log(camera_device_id_list[camera_index]);
+            deviceManager.switchCamera(camera_device_id_list[camera_index]);
+        }
 </script>
 </body>
 </html>
