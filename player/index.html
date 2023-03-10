@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>騰訊拉流</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+
+<body>
+    <video id="player-container-id" width="414" height="270" preload="auto" playsinline webkit-playsinline>
+    </video>
+
+    <!-- <button onclick="switch_camera()">切换摄像头</button> -->
+    <link href="release/tcplayer.min.css" rel="stylesheet"/>
+    <!--如果需要在 Chrome 和 Firefox 等现代浏览器中通过 H5 播放 HLS 格式的视频，需要在 tcplayer.vx.x.x.min.js 之前引入 hls.min.x.xx.m.js。-->
+    <script src="release/libs/hls.min.0.13.2m.js"></script>
+    <!--播放器脚本文件-->
+    <script src="release/tcplayer.v4.6.0.min.js"></script>
+
+    <script>
+        var player = TCPlayer('player-container-id', {}); // player-container-id 为播放器容器 ID，必须与 html 中一致
+        player.src('http://test.cchsj.com/live/test1.m3u8'); // url 播放地址
+
+    </script>
+</body>
+</html>
