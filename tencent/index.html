@@ -3,7 +3,7 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>騰訊推流31501</title>
+    <title>騰訊推流</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 </head>
 <body>
@@ -35,7 +35,7 @@
                 if (hasVideo && !isPush) {
                     console.log('hasAudio = true');  
                     isPush = true;
-                    livePusher.startPush('webrtc://181151.push.tlivecloud.com/live/10001122078?txSecret=31ebdd02cab6ac6d4ee29260a8a89308&txTime=64129F79');
+                    livePusher.startPush('webrtc://181151.push.tlivecloud.com/live/test1?txSecret=ec4bb0fb73c6c573483d12dc8f3fbf19&txTime=642673B1');
                 }
             },
             onCaptureFirstVideoFrame: function() {
@@ -43,7 +43,7 @@
                 if (hasAudio && !isPush) {
                     console.log('hasVideo = true');  
                     isPush = true;
-                    livePusher.startPush('webrtc://181151.push.tlivecloud.com/live/10001122078?txSecret=31ebdd02cab6ac6d4ee29260a8a89308&txTime=64129F79');
+                    livePusher.startPush('webrtc://181151.push.tlivecloud.com/live/test1?txSecret=ec4bb0fb73c6c573483d12dc8f3fbf19&txTime=642673B1');
                 }
             },
             // 推流警告信息
