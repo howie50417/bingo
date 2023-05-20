@@ -145,11 +145,11 @@ function isBuySell(isFirst) {
   if (rsi12.length != 2) return
   let candle3 = [...priceHistory].filter((item, index) => (priceHistory.length-index-1) % 3 === 0);
   let rsi3 = calculateRSI(candle3, 12).slice(-2)
-  if (rsi12[1] > rsi26[1] && rsi12[0] < rsi26[0] && rsi3[1] - rsi3[0] > 7) {
+  if (rsi12[1] > rsi26[1] && rsi12[0] < rsi26[0] && (rsi12[0] < 30 || rsi3[1] - rsi3[0] > 7)) {
     console.log(`###################### BUY 訊號 買入 ${priceNew}  ##########################`);
     performSteps('buy')
   }
-  if (rsi12[1] < rsi26[1] && rsi12[0] > rsi26[0] && rsi3[1] - rsi3[0] < -7) {
+  if (rsi12[1] < rsi26[1] && rsi12[0] > rsi26[0] && (rsi12[0] > 70 || rsi3[1] - rsi3[0] < -7)) {
     console.log(`###################### SELL 訊號 賣出 ${priceNew}  ##########################`);
     performSteps('sell')
   }
