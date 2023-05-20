@@ -1,4 +1,4 @@
-// ver.0520.05
+// ver.0520.06
 function delay(duration) {
   return new Promise(resolve => setTimeout(resolve, duration));
 }
@@ -140,12 +140,13 @@ function isBuySell(isFirst) {
     rsi26.shift()
     rsi12.shift()
   }
-  console.log(`RSI (26):`, rsi26);
-  console.log(`RSI (12):`, rsi12);
+  console.log(Date())
+  console.log(`RSI (26):`, rsi26, `RSI (12):`, rsi12);
   if (rsi26.length != 2) return
   if (rsi12.length != 2) return
   let candle3 = [...priceHistory].filter((item, index) => (priceHistory.length-index-1) % 3 === 0);
   let rsi3 = calculateRSI(candle3, 12).slice(-2)
+  console.log(`RSI (26):`, rsi26, `RSI (12):`, rsi12, `RSI 3:`, rsi3);
   if (rsi12[1] > rsi26[1] && rsi12[0] < rsi26[0] && (rsi3[1] - rsi3[0] > 7)) {
     console.log(`###################### BUY 訊號 買入 ${priceNew}  ##########################`);
     performSteps('buy')
