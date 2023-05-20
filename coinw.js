@@ -1,4 +1,4 @@
-// ver.0520.04
+// ver.0520.05
 function delay(duration) {
   return new Promise(resolve => setTimeout(resolve, duration));
 }
@@ -25,17 +25,18 @@ async function performSteps(mode) {
   window.count--;
   let rate = window.rate/100
   let priceNew = Number(document.querySelector('.infoitem-label-price').innerHTML)
+  let digitLen = (document.querySelector('.infoitem-label-price').innerHTML).split('.')[1].length
   document.querySelector('.buyamount-input .el-input__inner').value = window.lot;
   document.querySelector('.buyamount-input .el-input__inner').dispatchEvent(new Event('input', { bubbles: true }))
   autostop()
   await delay(500);
   if (mode == 'buy') {
-    document.querySelector('.profits-input .el-input__inner').value = (priceNew * (1 + rate)).toFixed(3);
-    document.querySelector('.loss-input .el-input__inner').value = (priceNew * (1 - rate)).toFixed(3);
+    document.querySelector('.profits-input .el-input__inner').value = (priceNew * (1 + rate)).toFixed(digitLen);
+    document.querySelector('.loss-input .el-input__inner').value = (priceNew * (1 - rate)).toFixed(digitLen);
   }
   if (mode == 'sell') {
-    document.querySelector('.profits-input .el-input__inner').value = (priceNew * (1 - rate)).toFixed(3);
-    document.querySelector('.loss-input .el-input__inner').value = (priceNew * (1 + rate)).toFixed(3);
+    document.querySelector('.profits-input .el-input__inner').value = (priceNew * (1 - rate)).toFixed(digitLen);
+    document.querySelector('.loss-input .el-input__inner').value = (priceNew * (1 + rate)).toFixed(digitLen);
   }
   document.querySelector('.profits-input .el-input__inner').dispatchEvent(new Event('input', { bubbles: true }))
   document.querySelector('.loss-input .el-input__inner').dispatchEvent(new Event('input', { bubbles: true }))
