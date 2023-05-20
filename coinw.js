@@ -1,4 +1,4 @@
-// ver.0520.02
+// ver.0520.03
 function delay(duration) {
   return new Promise(resolve => setTimeout(resolve, duration));
 }
