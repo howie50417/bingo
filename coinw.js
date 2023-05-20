@@ -12,21 +12,30 @@ function autostop() {
     }
   }
 }
+
 window.lot = 0;
+window.rate = 0.11;
+window.count = 70;
+
 async function performSteps(mode) {
-  if (window.lot == 0 ) return;
+  console.log(`模式:${mode} 數量:${window.lot} 止盈止損:${window.rate}% 剩餘次數${window.count}`);
+
+  if (window.lot == 0) return;
+  if (window.count == 0) return;
+  window.count--;
+  let rate = window.rate/100
   let priceNew = Number(document.querySelector('.infoitem-label-price').innerHTML)
   document.querySelector('.buyamount-input .el-input__inner').value = window.lot;
   document.querySelector('.buyamount-input .el-input__inner').dispatchEvent(new Event('input', { bubbles: true }))
   autostop()
   await delay(500);
   if (mode == 'buy') {
-    document.querySelector('.profits-input .el-input__inner').value = (priceNew * 1.0011).toFixed(3);
-    document.querySelector('.loss-input .el-input__inner').value = (priceNew * (1 - 0.0011)).toFixed(3);
+    document.querySelector('.profits-input .el-input__inner').value = (priceNew * (1 + rate)).toFixed(3);
+    document.querySelector('.loss-input .el-input__inner').value = (priceNew * (1 - rate)).toFixed(3);
   }
   if (mode == 'sell') {
-    document.querySelector('.profits-input .el-input__inner').value = (priceNew * (1 - 0.0011)).toFixed(3);
-    document.querySelector('.loss-input .el-input__inner').value = (priceNew * 1.0011).toFixed(3);
+    document.querySelector('.profits-input .el-input__inner').value = (priceNew * (1 - rate)).toFixed(3);
+    document.querySelector('.loss-input .el-input__inner').value = (priceNew * (1 + rate)).toFixed(3);
   }
   document.querySelector('.profits-input .el-input__inner').dispatchEvent(new Event('input', { bubbles: true }))
   document.querySelector('.loss-input .el-input__inner').dispatchEvent(new Event('input', { bubbles: true }))
@@ -115,20 +124,29 @@ function calculateRSI(prices, period = 14) {
 }
 
 var priceHistory = []
+var rsi26,rsi12
 
-function isBuySell() {
-  const rsi26 = calculateRSI(priceHistory, 26).slice(-2);
-  const rsi12 = calculateRSI(priceHistory, 12).slice(-2);
+function isBuySell(isFirst) {
+  let priceNew = Number(document.querySelector('.infoitem-label-price').innerHTML)
+  if (isFirst) {
+    rsi26 = calculateRSI(priceHistory, 26).slice(-2);
+    rsi12 = calculateRSI(priceHistory, 12).slice(-2);
+  } else {
+    rsi26.push(calculateRSI(priceHistory, 26).slice(-1)[0]);
+    rsi12.push(calculateRSI(priceHistory, 12).slice(-1)[0]);
+    rsi26.shift()
+    rsi12.shift()
+  }
   console.log(`RSI (26):`, rsi26);
   console.log(`RSI (12):`, rsi12);
   if (rsi26.length != 2) return
   if (rsi12.length != 2) return
   if (rsi12[1] > rsi26[1] && rsi12[0] < rsi26[0]) {
-    console.log(`###################### BUY 訊號 買入  ##########################`);
+    console.log(`###################### BUY 訊號 買入 ${priceNew}  ##########################`);
     performSteps('buy')
   }
   if (rsi12[1] < rsi26[1] && rsi12[0] > rsi26[0]) {
-    console.log(`###################### SELL 訊號 賣出  ##########################`);
+    console.log(`###################### SELL 訊號 賣出 ${priceNew}  ##########################`);
     performSteps('sell')
   }
 }
@@ -137,7 +155,7 @@ var initPrice = () => {
   getChartData()
     .then(prices => {
       priceHistory = prices
-      isBuySell()
+      isBuySell(true)
     })
     .catch(err => console.error(err));
 }
@@ -148,7 +166,7 @@ function updatePrice() {
   let priceNew = Number(document.querySelector('.infoitem-label-price').innerHTML)
   priceHistory.push(priceNew)
   priceHistory.shift()
-  isBuySell()
+  isBuySell(false)
 }
 setInterval(() => {
   updatePrice()
