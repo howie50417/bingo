@@ -1,4 +1,4 @@
-// ver.0521.01
+// ver.0521.02
 function delay(duration) {
   return new Promise(resolve => setTimeout(resolve, duration));
 }
@@ -16,13 +16,39 @@ function autostop() {
 window.lot = 0;
 window.rate = 0.14;
 window.count = 70;
+window.daily = {}
+
+function checkDaily() {
+  var date = new Date();
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  if (month < 10) {
+      month = '0' + month;
+  }
+  var day = date.getDate();
+  if (day < 10) {
+      day = '0' + day;
+  }
+  let today = '' + year + month + day
+  if (today in window.daily) {
+    if (window.daily[today] == 0) {
+      return window.daily[today]
+    } else {
+      window.daily[today] --
+      return window.daily[today] + 1
+    }
+  } else {
+    window.daily[today] = window.count - 1
+    return window.daily[today] + 1
+  }
+}
 
 async function performSteps(mode) {
-  console.log(`模式:${mode} 數量:${window.lot} 止盈止損:${window.rate}% 剩餘次數${window.count}`);
+  let count = checkDaily()
+  console.log(`模式:${mode} 數量:${window.lot} 止盈止損:${window.rate}% 剩餘次數${count}`);
 
   if (window.lot == 0) return;
-  if (window.count == 0) return;
-  window.count--;
+  if (count == 0) return;
   let rate = window.rate/100
   let priceNew = Number(document.querySelector('.infoitem-label-price').innerHTML)
   let digitLen = (document.querySelector('.infoitem-label-price').innerHTML).split('.')[1].length
