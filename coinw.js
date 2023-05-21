@@ -1,4 +1,4 @@
-// ver.0521.02
+// ver.0521.03
 function delay(duration) {
   return new Promise(resolve => setTimeout(resolve, duration));
 }
@@ -172,13 +172,13 @@ function isBuySell(isFirst) {
   // let candle3 = [...priceHistory].filter((item, index) => (priceHistory.length-index-1) % 3 === 0);
   // let rsi3 = calculateRSI(candle3, 12).slice(-2)
   let rsiDiff = Math.abs(rsi26[0] - rsi26[1])
-  console.log(`RSI (30):`, rsi26, `RSI (14):`, rsi12, `RSI diff:`, rsiDiff);
+  console.log(`RSI (30):`, rsi26, `RSI (14):`, rsi12, `RSI diff:`, rsiDiff.toFixed(2));
   if (rsi12[1] > rsi26[1] && rsi12[0] < rsi26[0] && (rsiDiff > 5)) {
-    console.log(`###################### BUY 訊號 買入 ${priceNew}  ##########################`);
+    console.log(`############################### BUY 訊號 買入 ${priceNew}  ###################################`);
     performSteps('buy')
   }
   if (rsi12[1] < rsi26[1] && rsi12[0] > rsi26[0] && (rsiDiff > 5)) {
-    console.log(`###################### SELL 訊號 賣出 ${priceNew}  ##########################`);
+    console.log(`############################### SELL 訊號 賣出 ${priceNew}  ###################################`);
     performSteps('sell')
   }
 }
