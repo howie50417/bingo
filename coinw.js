@@ -1,4 +1,4 @@
-// ver.0522.01
+// ver.0522.02
 function delay(duration) {
   return new Promise(resolve => setTimeout(resolve, duration));
 }
@@ -55,7 +55,7 @@ async function performSteps(mode) {
   document.querySelector('.buyamount-input .el-input__inner').value = window.lot;
   document.querySelector('.buyamount-input .el-input__inner').dispatchEvent(new Event('input', { bubbles: true }))
   autostop()
-  await delay(500);
+  await delay(100);
   if (mode == 'buy') {
     document.querySelector('.profits-input .el-input__inner').value = (priceNew * (1 + rate)).toFixed(digitLen);
     document.querySelector('.loss-input .el-input__inner').value = (priceNew * (1 - rate)).toFixed(digitLen);
@@ -66,7 +66,7 @@ async function performSteps(mode) {
   }
   document.querySelector('.profits-input .el-input__inner').dispatchEvent(new Event('input', { bubbles: true }))
   document.querySelector('.loss-input .el-input__inner').dispatchEvent(new Event('input', { bubbles: true }))
-  await delay(500);
+  await delay(100);
   if (mode == 'buy') {
     document.querySelector('.buy-btn').click();
   }
