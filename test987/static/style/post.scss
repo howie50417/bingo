@@ -1,0 +1,220 @@
+.record_item {
+	padding: 24upx 46upx 40upx 26upx;
+	display: flex;
+	border-bottom: 12upx solid rgba(248, 248, 248, 0.02);
+	&__portrait {
+		padding-right: 20upx;
+		.portrait {
+			width: 94upx;
+			height: 102upx;
+			position: relative;
+			display: flex;
+			justify-content: center;
+			align-items: flex-end;
+			.portrait__image {
+				width: 90upx;
+				height: 90upx;
+				border-radius: 50%;
+			}
+			.frame {
+				width: 94upx;
+				height: 102upx;
+				position: absolute;
+				bottom: 0;
+				right: 0;
+				z-index: 2;
+			}
+		}
+	}
+	.record_item__content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		.content-names {
+			height: 102upx;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			&__left {
+				display: flex;
+				flex-direction: column;
+				.name {
+					font-size: 30upx;
+					font-weight: 500;
+					color: $uni-text-color-inverse;
+				}
+				.time {
+					font-size: 24upx;
+					font-weight: 500;
+					color: #9AA8B5;
+				}
+			}
+			&__right {
+				.message {
+					width: 50upx;
+					height: 50upx;
+					background: $uni-bg-color-btn;
+					border-radius: 50%;
+					image {
+						width: 24upx;
+						height: 24upx;
+					}
+				}
+				.focus {
+					width: 100upx;
+					height: 50upx;
+					line-height: 50upx;
+					text-align: center;
+					background: $uni-bg-color-btn;
+					border-radius: 25upx;
+					font-size: 24upx;
+					font-weight: 500;
+					color: #1DA1F2;
+					margin-left: 20upx;
+				}
+			}
+		}
+		.content-desc {
+			font-size: 30upx;
+			font-weight: 500;
+			color: $uni-text-color-inverse;
+			margin-top: 22upx;
+			margin-bottom: 10upx;
+			word-break: break-all;
+			// text-overflow: ellipsis;
+			// display: -webkit-box;
+			// -webkit-box-orient: vertical;
+			// -webkit-line-clamp: 2;
+			// overflow: hidden;
+			.all-text {
+				color: #1DA1F2;
+				font-size: 30upx;
+				font-weight: 500;
+				margin-left: 10upx;
+			}
+		}
+		.content-media {
+			&__img {
+				flex-wrap: wrap;
+				>view {
+					width: 180upx;
+					height: 180upx;
+					border-radius: 10upx;
+					margin-bottom: 10upx;
+					overflow: hidden;
+					position: relative;
+					image {
+						width: 100%;
+						height: 100%;
+					}
+					.secret_icon {
+						width: 26upx;
+						height: 26upx;
+						position: absolute;
+						top: 6upx;
+						right: 6upx;
+						z-index: 2;
+					}
+					.secret-img {
+						-webkit-filter: blur(8upx);
+						filter: blur(8upx);
+					}
+					&:nth-child(3n + 2) {
+						margin-left: 10upx;
+						margin-right: 10upx;
+					}
+				}
+			}
+			
+			&__audio {
+				.audio-wrap {
+					width: 400upx;
+					height: 60upx;
+					background: #1E9BE8;
+					border-radius: 30upx;
+					padding: 0 26upx;
+					margin-top: 33upx;
+					image {
+						width: 254upx;
+						height: 26upx;
+					}
+					text {
+						font-size: 30upx;
+						font-weight: 900;
+						color: $uni-text-color-inverse;
+					}
+				}
+			}
+			
+			&__video {
+				margin-top: 24upx;
+				.video-wrap {
+					width: 370upx;
+					height: 370upx;
+					border-radius: 10upx;
+					position: relative;
+					background-color: #131B24;
+					video {
+						width: 370upx;
+						height: 370upx;
+						border-radius: 10upx;
+					}
+					>image {
+						width: 370upx;
+						height: 370upx;
+						border-radius: 10upx;
+					}
+					.pause {
+						position: absolute;
+						width: 100%;
+						height: 100%;
+						left: 0;
+						top: 0;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						.videoplay_icon {
+							width: 100upx;
+							height: 100upx;
+							position: absolute;
+							z-index: 2;
+						}
+						.video_png {
+							width: 100%;
+							height: 100%;
+						}
+						.secret_icon {
+							width: 26upx;
+							height: 26upx;
+							position: absolute;
+							top: 6upx;
+							right: 6upx;
+							z-index: 2;
+						}
+					}
+				}
+			}
+		}
+		
+		.content-footer {
+			padding: 0 8upx;
+			font-size: 24upx;
+			font-weight: 500;
+			color: #9AA8B5;
+			margin-top: 24upx;
+			>view {
+				display: flex;
+				align-items: center;
+				margin-right: 31upx;
+				&.active {
+					color: #1DA1F2;
+				}
+			}
+			image {
+				width: 38upx;
+				height: 38upx;
+				margin-right: 11upx;
+			}
+		}
+	}
+}
