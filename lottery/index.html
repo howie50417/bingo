@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>刮刮乐奖池生成器</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <style>
+    :root{
+      --bg:#0f172a; /* slate-900 */
+      --panel:#111827; /* gray-900 */
+      --muted:#94a3b8; /* slate-400 */
+      --text:#e5e7eb;  /* gray-200 */
+      --border:#1f2937; /* gray-800 */
+      --primary:#22c55e; /* green-500 */
+      --primary-600:#16a34a; /* green-600 */
+      --danger:#ef4444; /* red-500 */
+      --warn:#f59e0b; /* amber-500 */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background:linear-gradient(180deg,#0b1023,#101735 40%, #0b1023 100%);
+      color:var(--text);
+    }
+    .container{max-width:1200px;margin:0 auto;padding:24px}
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px
+    }
+    h1{font-size:24px;margin:0; letter-spacing:1px}
+    .ratio-group{display:flex; gap:8px; flex-wrap:wrap}
+    .btn{
+      border:1px solid var(--border); background:#0b1229; color:var(--text);
+      padding:8px 12px; border-radius:8px; cursor:pointer; transition:all .15s ease;
+    }
+    .btn:hover{transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,.25)}
+    .btn-primary{background:linear-gradient(135deg,#1d4ed8 0%, #22c55e 100%); border-color:transparent}
+    .btn-outline{background:transparent}
+    .btn-danger{background:linear-gradient(135deg,#ef4444,#f97316);border-color:transparent}
+    .btn-ghost{background:transparent; border-color:transparent; color:var(--muted)}
+
+    .panel{background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:14px; padding:16px}
+    .grid{display:grid; gap:16px}
+    .grid-2{grid-template-columns:repeat(2, minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3, minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4, minmax(0,1fr))}
+    .grid-3.ops-narrow{grid-template-columns:1.4fr 1.8fr 240px}
+    @media (max-width: 1024px){ .grid-4{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    @media (max-width: 640px){ .grid-4,.grid-3,.grid-2{grid-template-columns:1fr} header{flex-direction:column; align-items:flex-start} }
+
+    .field{display:flex; flex-direction:column; gap:6px}
+    .field label{font-size:12px; color:var(--muted)}
+    .field input{background:#0b1229; color:var(--text); border:1px solid var(--border); border-radius:8px; padding:10px; outline:none}
+    .field input:focus{border-color:#334155}
+
+    .cards{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px}
+    @media (max-width: 1024px){ .cards{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    @media (max-width: 640px){ .cards{grid-template-columns:1fr} }
+    .card{background:rgba(255,255,255,.04); border:1px solid var(--border); border-radius:12px; padding:12px}
+    .card .label{font-size:12px; color:var(--muted)}
+    .card .value{font-size:18px; margin-top:4px}
+    .value.success{color:#86efac}
+    .value.warn{color:#fde68a}
+    .value.danger{color:#fca5a5}
+
+    table{width:100%; border-collapse:collapse; overflow:hidden; border-radius:12px}
+    thead th{position:sticky; top:0; background:#0b1229; z-index:1}
+    th, td{padding:10px; border-bottom:1px solid var(--border); text-align:left}
+    tbody tr:hover{background:rgba(255,255,255,.03)}
+    .right{text-align:right}
+    .muted{color:var(--muted)}
+
+    .toolbar{display:flex; gap:8px; flex-wrap:wrap}
+    .spacer{flex:1}
+    .note{font-size:12px; color:var(--muted)}
+    .error{color:var(--danger)}
+    .ok{color:#86efac}
+    .chip{display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid var(--border); background:rgba(255,255,255,.04); font-size:12px; color:var(--muted)}
+    .toolbar.vertical{flex-direction:column; align-items:stretch}
+    .toolbar.vertical .btn{width:100%; text-align:center}
+    .toolbar.vertical .spacer{display:none}
+    .panel-ops .btn{background:linear-gradient(135deg, rgba(29,78,216,.2), rgba(34,197,94,.15)); border-color:transparent}
+  </style>
+</head>
+<body>
+  <div id="app" class="container" v-cloak>
+    <header>
+      <h1>刮刮乐奖池生成器</h1>
+      <div class="ratio-group">
+        <span class="note">奖池占总收入：</span>
+        <button class="btn" :class="state.prizePoolPercent===0.5?'btn-primary':''" @click="applyRatio(0.5)">50%</button>
+        <button class="btn" :class="state.prizePoolPercent===0.6?'btn-primary':''" @click="applyRatio(0.6)">60%</button>
+        <button class="btn" :class="state.prizePoolPercent===0.7?'btn-primary':''" @click="applyRatio(0.7)">70%</button>
+        <button class="btn" :class="state.prizePoolPercent===0.8?'btn-primary':''" @click="applyRatio(0.8)">80%</button>
+      </div>
+    </header>
+
+    <div class="grid grid-3 ops-narrow">
+      <div class="panel">
+        <div class="field">
+          <label>总印量（张）</label>
+          <input type="number" min="1" step="1" v-model.number="state.totalTickets" @input="sanitizeSettings" />
+        </div>
+        <div class="field">
+          <label>售价/张（元）</label>
+          <input type="number" min="0" step="1" v-model.number="state.pricePerTicket" @input="sanitizeSettings" />
+        </div>
+        <div class="field">
+          <label>印刷成本/张（元）</label>
+          <input type="number" min="0" step="0.1" v-model.number="state.printCostPerTicket" @input="sanitizeSettings" />
+        </div>
+        <div class="field">
+          <label>奖池占总收入（%）</label>
+          <input type="number" min="0" max="100" step="1" :value="(state.prizePoolPercent*100).toFixed(0)" @input="onPercentInput" />
+        </div>
+        <div class="field">
+          <label>比例更改时自动生成预设奖池</label>
+          <label style="display:flex; align-items:center; gap:8px">
+            <input type="checkbox" v-model="state.autoGenerateOnPercentChange" />
+            <span class="note">启用后，修改百分比会立即生成</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="cards">
+          <div class="card"><div class="label">总收入</div><div class="value">{{ formatCurrency(summary.revenue) }}</div></div>
+          <div class="card"><div class="label">目标奖池（{{ (state.prizePoolPercent*100).toFixed(0) }}%）</div><div class="value">{{ formatCurrency(summary.targetPrizeBudget) }}</div></div>
+          <div class="card"><div class="label">实际奖池</div><div class="value" :class="summary.diffToTarget===0?'success':(summary.diffToTarget>0?'warn':'danger')">{{ formatCurrency(summary.actualPrizeCost) }} {{ (summary.actualPrizeRate*100).toFixed(2) }}%</div></div>
+          <div class="card"><div class="label">差额（目标-实际）</div><div class="value" :class="summary.diffToTarget>=0?'success':'danger'">{{ formatCurrency(summary.diffToTarget) }}</div></div>
+          <div class="card"><div class="label">印刷成本合计</div><div class="value">{{ formatCurrency(summary.totalPrintCost) }}</div></div>
+          <div class="card"><div class="label">利润（实际）</div><div class="value" :class="summary.profit>=0?'success':'danger'">{{ formatCurrency(summary.profit) }}</div></div>
+          <div class="card"><div class="label">中奖率</div><div class="value">{{ (summary.winningRate*100).toFixed(2) }}%</div></div>
+          <div class="card"><div class="label">未中奖张数</div><div class="value">{{ summary.loserCount.toLocaleString() }}</div></div>
+        </div>
+      </div>
+
+      <div class="panel panel-ops">
+        <div class="field">
+          <label>快速操作</label>
+          <div class="toolbar vertical">
+            <button class="btn" @click="generatePresetPool()">按所选比例生成预设奖池</button>
+            <button class="btn" @click="addTier()">新增等级</button>
+            <button class="btn" @click="copyPlainText">一键复制为纯文本</button>
+            <!-- <button class="btn btn-danger" @click="resetDefaults">重置为预设</button> -->
+          </div>
+          <div class="note" style="margin-top:6px">
+            • 奖项名称按金额自动排序（头奖、二等奖…） • 最后一列为“未中奖”，自动计算剩余张数 • 变更即时保存至浏览器
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px">
+        <strong>奖池明细</strong>
+        <span class="chip">有效奖级：{{ summary.paidTierCount }} 个</span>
+        <span class="chip">已分配张数：{{ summary.assignedCount.toLocaleString() }}</span>
+        <span class="chip">中奖张数：{{ summary.winningCount.toLocaleString() }}</span>
+        <span v-if="summary.assignedCount>state.totalTickets" class="error">已分配张数超过总印量，请调整！</span>
+      </div>
+      <div style="overflow:auto">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:120px">等级</th>
+              <th class="right" style="width:60px">奖金（元）</th>
+              <th class="right" style="width:60px">张数</th>
+              <th class="right" style="width:200px">小计（元）</th>
+              <th style="width:80px"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(prize, idx) in sortedWinning" :key="prize.id">
+              <td>
+                <span>{{ idx === 0 ? '头奖' : ((CN_NUMS[idx+1] || `第${idx+1}`) + '奖') }}</span>
+              </td>
+              <td class="right">
+                <input type="number" min="0" step="1" v-model.number="prize.amount" @input="sanitizePrize(prize)" style="width:60px;text-align:right" />
+              </td>
+              <td class="right">
+                <input type="number" min="0" step="1" v-model.number="prize.count" @input="sanitizePrize(prize)" style="width:60px;text-align:right" />
+              </td>
+              <td class="right">{{ formatCurrency(prize.amount*prize.count) }}</td>
+              <td class="right">
+                <button class="btn btn-outline" @click="removeTier(prize)">删除</button>
+              </td>
+            </tr>
+            <tr>
+              <td>未中奖</td>
+              <td class="right"><span class="muted">0</span></td>
+              <td class="right"><span class="muted">{{ summary.loserCount.toLocaleString() }}</span></td>
+              <td class="right">{{ formatCurrency(0) }}</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><strong>合计</strong></td>
+              <td></td>
+              <td class="right"><strong>{{ summary.winningCount.toLocaleString() }}</strong></td>
+              <td class="right"><strong>{{ formatCurrency(summary.actualPrizeCost) }}</strong></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note" style="margin-top:8px">
+        • 输入的奖金将即时排序并重新命名等级 • 若“合计张数”超过“总印量”，最下方未中奖会变成 0 张并显示警告
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script>
+    const STORAGE_KEY = 'lottery-config-v1';
+    const CN_NUMS = ["零","一","二","三","四","五","六","七","八","九","十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十","二十一","二十二","二十三","二十四","二十五","二十六","二十七","二十八","二十九","三十"];
+
+    const uid = () => Math.random().toString(36).slice(2, 10);
+
+    const app = Vue.createApp({
+      setup(){
+        const state = Vue.reactive({
+          totalTickets: 10000,
+          pricePerTicket: 5,
+          printCostPerTicket: 0.5,
+          prizePoolPercent: 0.5,
+          autoGenerateOnPercentChange: false,
+          prizes: [] // 只存中獎等級（不含沒中獎）: {id, amount, count}
+        });
+
+        // 預設初始化（符合需求：一萬張、每張5元、成本0.5、10等級且第十等為0）
+        const resetDefaults = () => {
+          state.totalTickets = 10000;
+          state.pricePerTicket = 5;
+          state.printCostPerTicket = 0.5;
+          state.prizePoolPercent = 0.5;
+          state.autoGenerateOnPercentChange = false;
+          generatePresetPool();
+        };
+
+        const onPercentInput = (e) => {
+          let v = Number(e.target.value);
+          if (!Number.isFinite(v)) v = 0;
+          v = Math.max(0, Math.min(100, v));
+          v = Math.round(v);
+          state.prizePoolPercent = v / 100;
+          if (state.autoGenerateOnPercentChange) {
+            generatePresetPool();
+          }
+        };
+
+        // 套用比例快捷鍵
+        const applyRatio = (p) => {
+          state.prizePoolPercent = p;
+          generatePresetPool();
+        };
+
+        const sanitizeSettings = () => {
+          if (!Number.isFinite(state.totalTickets) || state.totalTickets < 1) state.totalTickets = 1;
+          state.totalTickets = Math.floor(state.totalTickets);
+          if (!Number.isFinite(state.pricePerTicket) || state.pricePerTicket < 0) state.pricePerTicket = 0;
+          state.pricePerTicket = Math.round(state.pricePerTicket);
+          if (!Number.isFinite(state.printCostPerTicket) || state.printCostPerTicket < 0) state.printCostPerTicket = 0;
+          // 保留1位小數
+          state.printCostPerTicket = Math.round(state.printCostPerTicket * 10) / 10;
+        };
+
+        const sanitizePrize = (prize) => {
+          if (!Number.isFinite(prize.amount) || prize.amount < 0) prize.amount = 0;
+          prize.amount = Math.round(prize.amount);
+          if (!Number.isFinite(prize.count) || prize.count < 0) prize.count = 0;
+          prize.count = Math.floor(prize.count);
+        };
+
+        // 計算區
+        const summary = Vue.computed(() => {
+          const revenue = Math.round(state.totalTickets * state.pricePerTicket);
+          const targetPrizeBudget = Math.round(revenue * state.prizePoolPercent);
+          const assignedCount = state.prizes.reduce((s,p)=> s + (Number.isFinite(p.count)?p.count:0), 0);
+          const winningCount = state.prizes.reduce((s,p)=> s + ((p.amount>0 && Number.isFinite(p.count))?p.count:0), 0);
+          const loserCount = Math.max(0, state.totalTickets - assignedCount);
+          const actualPrizeCost = state.prizes.reduce((s,p)=> s + (Math.max(0,p.amount) * Math.max(0,p.count)), 0);
+          const totalPrintCost = Math.round(state.totalTickets * (Number(state.printCostPerTicket)||0));
+          const profit = revenue - totalPrintCost - actualPrizeCost;
+          const diffToTarget = targetPrizeBudget - actualPrizeCost;
+          const winningRate = Math.max(0, Math.min(1, state.totalTickets>0 ? winningCount/state.totalTickets : 0));
+          const paidTierCount = state.prizes.filter(p => p.amount > 0).length;
+          const actualPrizeRate = revenue > 0 ? actualPrizeCost / revenue : 0;
+          return { revenue, targetPrizeBudget, actualPrizeCost, totalPrintCost, profit, diffToTarget, winningRate, loserCount, winningCount, assignedCount, paidTierCount, actualPrizeRate };
+        });
+
+        // 依獎金由高到低排序且動態命名
+        const sortedWinning = Vue.computed(() => {
+          const arr = state.prizes.slice().sort((a,b)=>{
+            if (b.amount !== a.amount) return b.amount - a.amount;
+            return a.id.localeCompare(b.id);
+          });
+          return arr;
+        });
+
+        const displayPrizes = Vue.computed(() => {
+          const winners = sortedWinning.value.map((p, idx)=> ({
+            ...p,
+            rankName: idx === 0 ? '头奖' : ((CN_NUMS[idx+1] || `第${idx+1}`) + '奖'),
+            isLoser: false,
+          }));
+          const loser = { id:'loser', rankName:'未中奖', isLoser:true, amount:0, count: summary.value.loserCount };
+          return [...winners, loser];
+        });
+
+        // 美化數字
+        const formatCurrency = (n) => {
+          const sign = n < 0 ? '-' : '';
+          const v = Math.abs(Math.round(n)).toLocaleString();
+          return sign + v + ' 元';
+        };
+
+        // 生成預設獎池（依所選比例）：不變更既有獎金，僅依目標獎池平均到各正獎級後換算張數；剩餘預算用最小獎填充
+        const generatePresetPool = () => {
+          const N = Math.max(1, Math.floor(state.totalTickets));
+          const price = Math.max(0, Math.round(state.pricePerTicket));
+          const revenue = N * price;
+          const B = Math.round(revenue * state.prizePoolPercent);
+
+          // 若目前沒有任何獎級，初始化預設面額（僅此情況才建立金額）
+          if (state.prizes.length === 0) {
+            const multipliers = [100, 50, 20, 10, 5, 3, 2, 1, 0.4];
+            const amounts = multipliers.map(m => Math.max(1, Math.round(m * price)));
+            const k = amounts.length;
+            const perTierBudget = Math.floor(B / Math.max(1, k));
+            let counts = amounts.map(a => Math.max(0, Math.floor(perTierBudget / a)));
+            // 以最小獎填充未分配預算
+            let assignedBudget = counts.reduce((s,c,i)=> s + (amounts[i] * c), 0);
+            let remainingBudget = B - assignedBudget;
+            if (remainingBudget > 0) {
+              let minIdx = 0;
+              for (let i = 1; i < amounts.length; i++) if (amounts[i] < amounts[minIdx]) minIdx = i;
+              const capacity = Math.max(0, N - counts.reduce((s,v)=>s+v,0));
+              const extra = Math.max(0, Math.min(Math.floor(remainingBudget / amounts[minIdx]), capacity));
+              counts[minIdx] += extra;
+            }
+            // 確保不超過總印量
+            let sum = counts.reduce((s,v)=>s+v,0);
+            if (sum > N) {
+              const factor = N / sum;
+              counts = counts.map(c => Math.floor(c * factor));
+            }
+            state.prizes = amounts.map((a,i)=> ({ id: uid(), amount: a, count: counts[i] }));
+            return;
+          }
+
+          // 針對現有獎級：不改金額，只重新計算張數
+          const positives = state.prizes.filter(p => p.amount > 0);
+          const k = positives.length;
+          if (k === 0) {
+            state.prizes.forEach(p => { p.count = 0; });
+            return;
+          }
+          const perTierBudget = Math.floor(B / k);
+          // 先依每級預算換算張數
+          positives.forEach(p => {
+            const amt = Math.max(1, Math.round(p.amount));
+            p.count = Math.max(0, Math.floor(perTierBudget / amt));
+          });
+          // 非正獎級張數歸零
+          state.prizes.forEach(p => { if (!(p.amount > 0)) p.count = 0; });
+          // 以最小獎填充未分配預算
+          let assignedBudget2 = state.prizes.reduce((s,p)=> s + (Math.max(0,p.amount) * Math.max(0,p.count)), 0);
+          let remainingBudget2 = B - assignedBudget2;
+          if (remainingBudget2 > 0) {
+            let smallest = positives.reduce((minP,p) => (Math.max(1, Math.round(p.amount)) < Math.max(1, Math.round(minP.amount)) ? p : minP), positives[0]);
+            const smallestAmt = Math.max(1, Math.round(smallest.amount));
+            const capacity2 = Math.max(0, N - state.prizes.reduce((s,p)=> s + (Number.isFinite(p.count)?p.count:0), 0));
+            const extra2 = Math.max(0, Math.min(Math.floor(remainingBudget2 / smallestAmt), capacity2));
+            if (extra2 > 0) smallest.count += extra2;
+          }
+          // 若總張數超過總印量則等比縮減
+          let assigned = state.prizes.reduce((s,p)=> s + (Number.isFinite(p.count)?p.count:0), 0);
+          if (assigned > N) {
+            const factor = N / assigned;
+            state.prizes.forEach(p => { p.count = Math.floor(p.count * factor); });
+          }
+        };
+
+        const addTier = () => {
+          // 預設新增面額為當前售價、張數 0
+          state.prizes.push({ id: uid(), amount: Math.max(0, Math.round(state.pricePerTicket)), count: 0 });
+        };
+        const removeTier = (prize) => {
+          const idx = state.prizes.findIndex(p => p.id === prize.id);
+          if (idx >= 0) state.prizes.splice(idx, 1);
+        };
+
+        // LocalStorage
+        let saveTimer = null;
+        const saveToLocal = () => {
+          if (saveTimer) clearTimeout(saveTimer);
+          saveTimer = setTimeout(()=>{
+            const payload = {
+              totalTickets: state.totalTickets,
+              pricePerTicket: state.pricePerTicket,
+              printCostPerTicket: state.printCostPerTicket,
+              prizePoolPercent: state.prizePoolPercent,
+              autoGenerateOnPercentChange: state.autoGenerateOnPercentChange,
+              prizes: state.prizes.map(p=> ({ id: p.id, amount: p.amount, count: p.count }))
+            };
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch(e){}
+          }, 250);
+        };
+        const loadFromLocal = () => {
+          try{
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) { resetDefaults(); return; }
+            const data = JSON.parse(raw);
+            state.totalTickets = Number.isFinite(data.totalTickets)? data.totalTickets : 10000;
+            state.pricePerTicket = Number.isFinite(data.pricePerTicket)? data.pricePerTicket : 5;
+            state.printCostPerTicket = Number.isFinite(data.printCostPerTicket)? data.printCostPerTicket : 0.5;
+            state.prizePoolPercent = Number.isFinite(data.prizePoolPercent)? data.prizePoolPercent : 0.5;
+            state.autoGenerateOnPercentChange = !!data.autoGenerateOnPercentChange;
+            state.prizes = Array.isArray(data.prizes) && data.prizes.length>0
+              ? data.prizes.map(p=> ({ id: p.id || uid(), amount: Math.max(0, Math.round(p.amount||0)), count: Math.max(0, Math.floor(p.count||0)) }))
+              : [];
+            if (state.prizes.length === 0) generatePresetPool();
+          }catch(e){ resetDefaults(); }
+        };
+
+        Vue.watch(state, saveToLocal, { deep: true });
+
+        // 複製純文本
+        const copyPlainText = async () => {
+          const lines = [];
+          lines.push('刮刮乐设置');
+          lines.push(`总印量：${state.totalTickets}`);
+          lines.push(`售价/张：${state.pricePerTicket} 元`);
+          lines.push(`印刷成本/张：${state.printCostPerTicket} 元`);
+          lines.push(`总收入：${summary.value.revenue} 元`);
+          lines.push(`奖池比例：${(state.prizePoolPercent*100).toFixed(0)}%`);
+          lines.push(`目标奖池：${summary.value.targetPrizeBudget} 元`);
+          lines.push(`实际奖池：${summary.value.actualPrizeCost} 元`);
+          lines.push(`奖池差额（目标-实际）：${summary.value.diffToTarget} 元`);
+          lines.push(`总印刷成本：${summary.value.totalPrintCost} 元`);
+          lines.push(`利润（实际）：${summary.value.profit} 元`);
+          lines.push(`已分配张数：${summary.value.assignedCount} 张`);
+          lines.push(`中奖张数：${summary.value.winningCount} 张`);
+          lines.push(`未中奖张数：${summary.value.loserCount} 张`);
+          lines.push('');
+          sortedWinning.value.forEach((p, idx)=>{
+            const name = idx===0 ? '头奖' : ((CN_NUMS[idx+1] || `第${idx+1}`) + '奖');
+            lines.push(`${name}：金额 ${p.amount} 元 × ${p.count} 张 = ${p.amount*p.count} 元`);
+          });
+          lines.push(`未中奖：张数 ${summary.value.loserCount} 张`);
+          const text = lines.join('\n');
+          try{
+            await navigator.clipboard.writeText(text);
+            alert('已复制为纯文本');
+          }catch(e){
+            // 後備方案
+            const ta = document.createElement('textarea');
+            ta.value = text; document.body.appendChild(ta); ta.select();
+            try{ document.execCommand('copy'); alert('已复制为纯文本'); }catch(err){ alert('复制失败，请手动复制'); }
+            document.body.removeChild(ta);
+          }
+        };
+
+        Vue.onMounted(() => {
+          loadFromLocal();
+        });
+
+        return {
+          state,
+          summary,
+          sortedWinning,
+          displayPrizes,
+          formatCurrency,
+          applyRatio,
+          onPercentInput,
+          generatePresetPool,
+          addTier,
+          removeTier,
+          sanitizeSettings,
+          sanitizePrize,
+          copyPlainText,
+          resetDefaults,
+          CN_NUMS,
+        };
+      }
+    });
+
+    app.mount('#app');
+  </script>
+</body>
+</html>
