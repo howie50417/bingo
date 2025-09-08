@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!-- saved from url=(0031)https://www.iamwawa.cn/aes.html -->
+<html><div id="in-page-channel-node-id" data-channel-name="in_page_channel_5BjgAg"></div><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<link rel="icon" type="image/png" href="https://www.iamwawa.cn/Public/img/favicon.png">
+<link rel="apple-touch-icon-precomposed" href="https://www.iamwawa.cn/Public/img/app-icon72x72@2x.png">
+<title>在线AES加密解密工具_蛙蛙工具</title>
+<meta name="keywords" content="AES加密,AES解密">
+<meta name="description" content="在线AES加密解密工具提供AES算法(高级加密标准)的加密及解密功能，工具支持 CBC、CFB、CTR、OFB 和 ECB 5 种加密解密模式。">
+<link href="./files/wawa.min.css" rel="stylesheet">
+</head>
+
+<body class="with-sidebar">
+<div class="content">
+	<div class="content-body">
+        <div class="tool-title clearfix">
+            <h1 class="tool-name">AES加密解密</h1>
+            <button id="btn-like"><i class="icon-heart"></i> <span id="like-txt">点赞</span> (<span id="like-num">175</span>)</button>
+        </div>
+		<form class="tool-form">
+			<div class="form-field"><textarea class="form-textarea form-block" id="tool-text" tabindex="1" rows="10" placeholder="请输入初始文本"></textarea></div>
+			<div class="form-btn">
+				<label for="aes-secret">密匙</label>
+				<input name="aes-secret" id="aes-secret" class="form-input" tabindex="2">
+				<label for="aes-mode">模式</label>
+				<select class="form-input" id="aes-mode" name="aes-mode">
+					<option value="CBC">CBC (Cipher Block Chaining) 默认</option>
+					<option value="CFB">CFB (Cipher FeedBack)</option>
+					<option value="CTR">CTR (Counter)</option>
+					<option value="OFB">OFB (Output FeedBack)</option>
+					<option value="ECB">ECB (Electronic Code Book)</option>
+				</select>
+				<input class="btn btn-success" type="button" value="加密" data-action="encrypt">
+				<input class="btn btn-success" type="button" value="解密" data-action="decrypt">
+				<input class="btn btn-warning btn-copy" type="button" value="复制" data-clipboard-target="#tool-result">
+				<input class="btn btn-error btn-reset" type="button" value="清空">
+			</div>
+			<div id="tool-tips"></div>
+			<div class="form-field"><textarea class="form-textarea form-block" id="tool-result" rows="10"></textarea></div>
+		</form>
+		
+	</div>
+</div>
+
+<script type="text/javascript">var WW_APP='/';var WW_PUBLIC='/Public/';var WW_URL='/home/aes/';var WW_TID=83;var WW_UID=0;var WW_VIP=0;var WW_SBS=1;</script>
+<script src="./files/public.min.js"></script>
+<script src="./files/aes.min.js"></script>
+
+</body></html>
