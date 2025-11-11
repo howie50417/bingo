@@ -42,6 +42,10 @@
 			</div>
 			<div id="tool-tips"></div>
 			<div class="form-field"><textarea class="form-textarea form-block" id="tool-result" rows="10"></textarea></div>
+			<div class="form-field">
+				<label for="tool-export">Uniapp用格式</label>
+				<textarea class="form-textarea form-block" id="tool-export" rows="5" readonly placeholder="按下“加密”後顯示 cosCipher 與 aesKey"></textarea>
+			</div>
 		</form>
 		
 	</div>
@@ -50,5 +54,39 @@
 <script type="text/javascript">var WW_APP='/';var WW_PUBLIC='/Public/';var WW_URL='/home/aes/';var WW_TID=83;var WW_UID=0;var WW_VIP=0;var WW_SBS=1;</script>
 <script src="./files/public.min.js"></script>
 <script src="./files/aes.min.js"></script>
+<script>
+(function () {
+	var encryptBtn = document.querySelector('input[data-action="encrypt"]');
+	var resultEl = document.getElementById('tool-result');
+	var keyEl = document.getElementById('aes-secret');
+	var exportEl = document.getElementById('tool-export');
+	if (!encryptBtn || !resultEl || !keyEl || !exportEl) {
+		return;
+	}
+
+	var escapeValue = function (str) {
+		return str
+			.replace(/\\/g, '\\\\')
+			.replace(/"/g, '\\"')
+			.replace(/\r?\n/g, '\\n');
+	};
+
+	var updateExportBlock = function () {
+		var cipher = resultEl.value.trim();
+		if (!cipher) {
+			exportEl.value = '';
+			return;
+		}
+		var key = keyEl.value || '';
+		exportEl.value =
+			'export const cosCipher = "' + escapeValue(cipher) + '";\n' +
+			'export const aesKey = "' + escapeValue(key) + '";';
+	};
+
+	encryptBtn.addEventListener('click', function () {
+		setTimeout(updateExportBlock, 0);
+	});
+})();
+</script>
 
 </body></html>
