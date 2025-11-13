@@ -198,7 +198,8 @@
 			showTips('當前瀏覽器不支援 S3 解密功能 (缺少 fetch)');
 			return;
 		}
-		var url = (toolTextEl.value || '').trim();
+		var originalInputValue = toolTextEl.value;
+		var url = (originalInputValue || '').trim();
 		if (!url) {
 			showTips('請先在輸入框中提供 S3 下載網址');
 			return;
@@ -213,10 +214,14 @@
 			}
 			return response.text();
 		}).then(function (cipherText) {
-			toolTextEl.value = cipherText.trim();
+			var cipher = cipherText.trim();
+			toolTextEl.value = cipher;
 			decryptBtn.click();
 			showTips('S3 內容已下載並執行解密');
 			setTimeout(validateJson, 0);
+			setTimeout(function () {
+				toolTextEl.value = originalInputValue;
+			}, 0);
 			toggleS3Button(false);
 		}).catch(function (error) {
 			showTips('S3 下載失敗：' + error.message);
