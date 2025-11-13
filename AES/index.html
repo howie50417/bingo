@@ -13,6 +13,38 @@
 <meta name="keywords" content="AES加密,AES解密">
 <meta name="description" content="在线AES加密解密工具提供AES算法(高级加密标准)的加密及解密功能，工具支持 CBC、CFB、CTR、OFB 和 ECB 5 种加密解密模式。">
 <link href="./files/wawa.min.css" rel="stylesheet">
+<style>
+.json-alert {
+	display: none;
+	margin-top: 10px;
+	padding: 10px 12px;
+	border-radius: 4px;
+	font-size: 14px;
+	border: 1px solid transparent;
+}
+.json-alert.is-visible {
+	display: block;
+}
+.json-alert--success {
+	background-color: #e6ffed;
+	border-color: #74d686;
+	color: #0a5b24;
+}
+.json-alert--error {
+	background-color: #ffeaea;
+	border-color: #f28a8a;
+	color: #a01024;
+}
+.btn-s3 {
+	background-color: #2f73ff;
+	border-color: #2f73ff;
+	color: #fff;
+}
+.btn-s3:disabled {
+	opacity: .7;
+	cursor: not-allowed;
+}
+</style>
 </head>
 
 <body class="with-sidebar">
@@ -39,9 +71,11 @@
 				<input class="btn btn-success" type="button" value="解密" data-action="decrypt">
 				<input class="btn btn-warning btn-copy" type="button" value="复制" data-clipboard-target="#tool-result">
 				<input class="btn btn-error btn-reset" type="button" value="清空">
+				<input class="btn btn-s3" type="button" value="S3解密" id="btn-s3-decrypt">
 			</div>
 			<div id="tool-tips"></div>
 			<div class="form-field"><textarea class="form-textarea form-block" id="tool-result" rows="10"></textarea></div>
+			<div id="json-status" class="json-alert" role="status" aria-live="polite"></div>
 			<div class="form-field">
 				<label for="tool-export">Uniapp用格式</label>
 				<textarea class="form-textarea form-block" id="tool-export" rows="5" readonly placeholder="按下“加密”後顯示 cosCipher 與 aesKey"></textarea>
@@ -85,6 +119,109 @@
 
 	encryptBtn.addEventListener('click', function () {
 		setTimeout(updateExportBlock, 0);
+	});
+})();
+
+(function () {
+	var s3Btn = document.getElementById('btn-s3-decrypt');
+	var decryptBtn = document.querySelector('input[data-action="decrypt"]');
+	var toolTextEl = document.getElementById('tool-text');
+	var resultEl = document.getElementById('tool-result');
+	var jsonStatusEl = document.getElementById('json-status');
+	var toolTipsEl = document.getElementById('tool-tips');
+	var workerProxyPrefix = 'https://sparkling-night-682d.imgoodtea-902.workers.dev/?url=';
+	if (!s3Btn || !decryptBtn || !toolTextEl || !resultEl || !jsonStatusEl) {
+		return;
+	}
+
+	var originalS3Label = s3Btn.value;
+	var showTips = function (message) {
+		if (!toolTipsEl) {
+			return;
+		}
+		toolTipsEl.textContent = message || '';
+	};
+
+	var toggleS3Button = function (disabled) {
+		s3Btn.disabled = disabled;
+		s3Btn.value = disabled ? 'S3解密中...' : originalS3Label;
+	};
+
+	var buildWorkerUrl = function (rawUrl) {
+		if (!rawUrl) {
+			return '';
+		}
+		if (rawUrl.indexOf(workerProxyPrefix) === 0) {
+			return rawUrl;
+		}
+		return workerProxyPrefix + encodeURIComponent(rawUrl);
+	};
+
+	var setJsonStatus = function (isValid) {
+		if (!resultEl.value.trim()) {
+			jsonStatusEl.textContent = '';
+			jsonStatusEl.classList.remove('is-visible', 'json-alert--success', 'json-alert--error');
+			return;
+		}
+		jsonStatusEl.textContent = isValid ? 'JSON格式正確' : 'JSON格式錯誤';
+		jsonStatusEl.classList.add('is-visible');
+		jsonStatusEl.classList.toggle('json-alert--success', isValid);
+		jsonStatusEl.classList.toggle('json-alert--error', !isValid);
+	};
+
+	var validateJson = function () {
+		var text = resultEl.value.trim();
+		if (!text) {
+			jsonStatusEl.textContent = '';
+			jsonStatusEl.classList.remove('is-visible', 'json-alert--success', 'json-alert--error');
+			return;
+		}
+		try {
+			JSON.parse(text);
+			setJsonStatus(true);
+		} catch (err) {
+			setJsonStatus(false);
+		}
+	};
+
+	if (decryptBtn) {
+		decryptBtn.addEventListener('click', function () {
+			setTimeout(validateJson, 0);
+		});
+	}
+	resultEl.addEventListener('input', function () {
+		validateJson();
+	});
+
+	s3Btn.addEventListener('click', function () {
+		if (!window.fetch) {
+			showTips('當前瀏覽器不支援 S3 解密功能 (缺少 fetch)');
+			return;
+		}
+		var url = (toolTextEl.value || '').trim();
+		if (!url) {
+			showTips('請先在輸入框中提供 S3 下載網址');
+			return;
+		}
+		var workerUrl = buildWorkerUrl(url);
+		showTips('正在下載 S3 內容…');
+		toggleS3Button(true);
+
+		fetch(workerUrl).then(function (response) {
+			if (!response.ok) {
+				throw new Error('HTTP ' + response.status);
+			}
+			return response.text();
+		}).then(function (cipherText) {
+			toolTextEl.value = cipherText.trim();
+			decryptBtn.click();
+			showTips('S3 內容已下載並執行解密');
+			setTimeout(validateJson, 0);
+			toggleS3Button(false);
+		}).catch(function (error) {
+			showTips('S3 下載失敗：' + error.message);
+			toggleS3Button(false);
+		});
 	});
 })();
 </script>
