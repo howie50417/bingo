@@ -90,8 +90,10 @@ window.Player = (function () {
       var len = Math.sqrt(fx * fx + fz * fz);
       fx /= len; fz /= len;
       var sin = Math.sin(api.yaw), cos = Math.cos(api.yaw);
-      mvx = (fx * cos - fz * sin) * spd;
-      mvz = (fz * cos + fx * sin) * spd;
+      // 將本地 WASD 方向依相機 yaw 旋轉到世界座標。
+      // Three.js 的相機朝本地 -Z；yaw 為正時，前方會轉向 -X。
+      mvx = (fx * cos + fz * sin) * spd;
+      mvz = (fz * cos - fx * sin) * spd;
     }
     api.speed = has ? spd : 0;
     api.moving = has;
