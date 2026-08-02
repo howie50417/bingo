@@ -104,7 +104,7 @@ window.Player = (function () {
 
     // 重力 + 跳
     if (api.grounded && Input.pressed('Space')) {
-      vel.y = CFG.JUMP * 0.72;
+      vel.y = CFG.JUMP;
       api.grounded = false;
     }
     if (!api.grounded) {
