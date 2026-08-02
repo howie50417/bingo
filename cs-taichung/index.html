@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS:TAICHUNG 台中訓練場</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app"></div>
+
+<!-- 載入畫面 -->
+<div id="loading">
+  <div class="load-title">CS:TAICHUNG</div>
+  <div class="load-sub">台中訓練場 載入中…</div>
+</div>
+
+<!-- HUD -->
+<div id="hud" class="hidden">
+  <!-- 動態準星 -->
+  <div id="crosshair">
+    <div class="chl ch-n"></div><div class="chl ch-s"></div>
+    <div class="chl ch-w"></div><div class="chl ch-e"></div>
+    <div class="ch-dot"></div>
+  </div>
+  <!-- 命中回饋 -->
+  <div id="hitmarker">
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <!-- 狙擊開鏡 -->
+  <div id="scope" class="hidden">
+    <div class="scope-mask"></div>
+    <div class="scope-ring"></div>
+    <div class="scope-line scope-h"></div>
+    <div class="scope-line scope-v"></div>
+  </div>
+  <!-- 雷達 -->
+  <div id="radar-wrap"><canvas id="radar" width="180" height="180"></canvas></div>
+  <!-- 左下 狀態 -->
+  <div id="status-block">
+    <div class="stat-row"><span class="stat-label">HP</span><span id="hp-num">100</span></div>
+    <div class="stat-row"><span class="stat-label">護甲</span><span id="armor-num">100</span></div>
+  </div>
+  <!-- 右下 彈藥 -->
+  <div id="ammo-block">
+    <div id="weapon-name">AK-47</div>
+    <div><span id="ammo-mag">30</span><span id="ammo-sep">|</span><span id="ammo-reserve">90</span></div>
+    <div id="money">$0</div>
+  </div>
+  <!-- 上方 計時 -->
+  <div id="top-block">
+    <div id="timer">00:00</div>
+    <div id="challenge-timer" class="hidden">挑戰 0.00</div>
+  </div>
+  <!-- 連擊 -->
+  <div id="combo" class="hidden">連擊 x2</div>
+  <!-- 擊破訊息 -->
+  <div id="killfeed"></div>
+  <!-- 中央訊息 -->
+  <div id="center-msg" class="hidden"></div>
+  <!-- 提示 -->
+  <div id="hint">T 計時挑戰 · B 重置目標 · Tab 記分板</div>
+  <!-- 記分板 -->
+  <div id="scoreboard" class="hidden">
+    <div class="sb-title">台中訓練場 — 訓練紀錄</div>
+    <div id="sb-body"></div>
+  </div>
+  <div id="fps">60 FPS</div>
+</div>
+
+<!-- 主選單 -->
+<div id="menu">
+  <div class="menu-inner">
+    <div class="game-logo">CS:TAICHUNG</div>
+    <div class="game-sub">台 中 訓 練 場</div>
+    <div class="menu-desc">台灣大道 · 逢甲夜市 · 一中商圈 · 公園靶場 — 不限時自由射擊練習</div>
+    <button id="btn-start" class="mbtn">開始訓練</button>
+    <button id="btn-help" class="mbtn">操作說明</button>
+    <button id="btn-settings" class="mbtn">設定</button>
+    <div class="menu-foot">武器：小刀 / Glock-18 / AK-47 / AWP &nbsp;·&nbsp; 純網頁版，無需伺服器</div>
+  </div>
+</div>
+
+<!-- 操作說明 -->
+<div id="help-panel" class="hidden">
+  <div class="panel-inner">
+    <div class="panel-title">操作說明</div>
+    <table class="keys">
+      <tr><td>W A S D</td><td>移動</td><td>Shift</td><td>衝刺</td></tr>
+      <tr><td>滑鼠左鍵</td><td>射擊 / 揮刀</td><td>滑鼠右鍵</td><td>AWP 開鏡 / 刀重擊</td></tr>
+      <tr><td>1 2 3 4</td><td>切換武器</td><td>滾輪 / Q</td><td>循環切槍</td></tr>
+      <tr><td>R</td><td>換彈匣</td><td>F</td><td>檢視武器</td></tr>
+      <tr><td>Space</td><td>跳躍</td><td>Ctrl / C</td><td>蹲下</td></tr>
+      <tr><td>T</td><td>計時挑戰</td><td>B</td><td>重置全部目標</td></tr>
+      <tr><td>Tab</td><td>記分板</td><td>Esc</td><td>暫停</td></tr>
+    </table>
+    <div class="help-tip">目標：公園靶場人形靶（爆頭高分）、鋼靶、玻璃瓶、氣球、夜市移動靶與彈出靶。</div>
+    <button id="btn-help-back" class="mbtn">返回</button>
+  </div>
+</div>
+
+<!-- 暫停 -->
+<div id="pause" class="hidden">
+  <div class="menu-inner">
+    <div class="game-logo small">已暫停</div>
+    <button id="btn-resume" class="mbtn">繼續訓練</button>
+    <button id="btn-reset" class="mbtn">重置目標</button>
+    <button id="btn-pause-settings" class="mbtn">設定</button>
+    <button id="btn-quit" class="mbtn">回主選單</button>
+  </div>
+</div>
+
+<!-- 設定 -->
+<div id="settings" class="hidden">
+  <div class="panel-inner">
+    <div class="panel-title">設定</div>
+    <div class="set-row"><label>滑鼠靈敏度</label><input id="set-sens" type="range" min="0.2" max="3" step="0.05" value="1"><span id="set-sens-v">1.00</span></div>
+    <div class="set-row"><label>音量</label><input id="set-vol" type="range" min="0" max="1" step="0.05" value="0.8"><span id="set-vol-v">0.80</span></div>
+    <div class="set-row"><label>畫質</label>
+      <select id="set-quality"><option value="high">高（陰影）</option><option value="low">低（流暢）</option></select>
+    </div>
+    <div class="set-row"><label>反向 Y 軸</label><input id="set-inverty" type="checkbox"></div>
+    <button id="btn-settings-back" class="mbtn">返回</button>
+  </div>
+</div>
+
+<script src="js/lib/three.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/core/input.js"></script>
+<script src="js/core/audio.js"></script>
+<script src="js/world/textures.js"></script>
+<script src="js/world/effects.js"></script>
+<script src="js/world/city.js"></script>
+<script src="js/world/props.js"></script>
+<script src="js/world/range.js"></script>
+<script src="js/weapons/viewmodels.js"></script>
+<script src="js/weapons/weapons.js"></script>
+<script src="js/ui/hud.js"></script>
+<script src="js/ui/menu.js"></script>
+<script src="js/core/player.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

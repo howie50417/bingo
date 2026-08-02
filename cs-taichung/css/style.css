@@ -1,0 +1,149 @@
+/* CS:TAICHUNG 台中訓練場 — HUD & 選單樣式（CS 風） */
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden; background:#000;
+  font-family:'Segoe UI','Microsoft JhengHei','PingFang TC',sans-serif;
+  user-select:none; -webkit-user-select:none; }
+#app, #app canvas { position:fixed; inset:0; }
+.hidden { display:none !important; }
+
+/* ---------- 載入 ---------- */
+#loading { position:fixed; inset:0; background:#0c0f14; z-index:100;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.load-title { font-size:52px; font-weight:800; color:#e8b93c; letter-spacing:6px; }
+.load-sub { margin-top:14px; color:#9fb2c8; font-size:16px; letter-spacing:4px;
+  animation:blink 1.2s infinite; }
+@keyframes blink { 50% { opacity:.35; } }
+
+/* ---------- HUD 通用 ---------- */
+#hud { position:fixed; inset:0; pointer-events:none; z-index:10; }
+
+/* 準星 */
+#crosshair { position:absolute; left:50%; top:50%; width:0; height:0; }
+.chl { position:absolute; background:#4dff5e; box-shadow:0 0 2px #000, 0 0 4px rgba(0,0,0,.8); }
+.ch-n, .ch-s { width:2px; height:9px; left:-1px; }
+.ch-w, .ch-e { height:2px; width:9px; top:-1px; }
+.ch-n { bottom:var(--gap,4px); } .ch-s { top:var(--gap,4px); }
+.ch-w { right:var(--gap,4px); } .ch-e { left:var(--gap,4px); }
+.ch-dot { position:absolute; width:2px; height:2px; left:-1px; top:-1px; background:#4dff5e; }
+#crosshair.scoped-hide { opacity:0; }
+
+/* 命中標記 */
+#hitmarker { position:absolute; left:50%; top:50%; opacity:0; transition:opacity .12s; }
+#hitmarker span { position:absolute; width:2.5px; height:11px; background:#fff;
+  box-shadow:0 0 3px #000; }
+#hitmarker span:nth-child(1){ transform:translate(-9px,-16px) rotate(-45deg); }
+#hitmarker span:nth-child(2){ transform:translate(7px,-16px) rotate(45deg); }
+#hitmarker span:nth-child(3){ transform:translate(-9px,5px) rotate(45deg); }
+#hitmarker span:nth-child(4){ transform:translate(7px,5px) rotate(-45deg); }
+#hitmarker.show { opacity:1; transition:none; }
+#hitmarker.head span { background:#ff4646; }
+
+/* 狙擊鏡 */
+#scope { position:absolute; inset:0; }
+.scope-mask { position:absolute; inset:0;
+  background:radial-gradient(circle at 50% 50%, transparent 31vmin, rgba(0,0,0,.985) 32.2vmin); }
+.scope-ring { position:absolute; left:50%; top:50%; width:63vmin; height:63vmin;
+  transform:translate(-50%,-50%); border:2px solid rgba(0,0,0,.9); border-radius:50%; }
+.scope-line { position:absolute; background:rgba(10,10,10,.85); }
+.scope-h { left:50%; top:50%; width:62vmin; height:1.5px; transform:translate(-50%,-50%); }
+.scope-v { left:50%; top:50%; width:1.5px; height:62vmin; transform:translate(-50%,-50%); }
+
+/* 雷達 */
+#radar-wrap { position:absolute; left:18px; top:18px; width:180px; height:180px;
+  border:2px solid rgba(120,160,200,.35); border-radius:6px; overflow:hidden;
+  background:rgba(8,14,20,.55); }
+#radar { width:180px; height:180px; }
+
+/* 左下 HP */
+#status-block { position:absolute; left:22px; bottom:20px; color:#dfe9f2;
+  text-shadow:0 0 4px #000, 0 1px 2px #000; }
+.stat-row { display:flex; align-items:baseline; gap:10px; }
+.stat-label { font-size:13px; color:#9fb2c8; width:34px; }
+#hp-num, #armor-num { font-size:34px; font-weight:700; line-height:1.05; }
+#hp-num { color:#e8f2e8; } #armor-num { color:#a9c6e8; font-size:26px; }
+
+/* 右下 彈藥 */
+#ammo-block { position:absolute; right:26px; bottom:20px; text-align:right; color:#dfe9f2;
+  text-shadow:0 0 4px #000, 0 1px 2px #000; }
+#weapon-name { font-size:14px; letter-spacing:2px; color:#e8b93c; font-weight:600; }
+#ammo-mag { font-size:42px; font-weight:800; }
+#ammo-sep { color:#7d8ea0; margin:0 8px; font-size:26px; }
+#ammo-reserve { font-size:22px; color:#9fb2c8; }
+#ammo-mag.low { color:#ff5b5b; }
+#money { font-size:16px; color:#7ddc7d; font-weight:600; margin-top:2px; }
+
+/* 上方計時 */
+#top-block { position:absolute; top:14px; left:50%; transform:translateX(-50%); text-align:center; }
+#timer { font-size:26px; font-weight:700; color:#e8eef5; text-shadow:0 0 4px #000;
+  font-variant-numeric:tabular-nums; }
+#challenge-timer { margin-top:4px; font-size:18px; font-weight:700; color:#ffb340;
+  text-shadow:0 0 6px #000; font-variant-numeric:tabular-nums; }
+
+/* 連擊 */
+#combo { position:absolute; right:26px; bottom:150px; font-size:22px; font-weight:800;
+  color:#ffb340; text-shadow:0 0 8px rgba(255,140,0,.6), 0 1px 2px #000; }
+
+/* 擊破訊息 */
+#killfeed { position:absolute; right:18px; top:18px; display:flex; flex-direction:column;
+  gap:6px; align-items:flex-end; }
+.kf { background:rgba(10,16,24,.72); border:1px solid rgba(120,160,200,.25);
+  border-radius:4px; padding:5px 12px; color:#dfe9f2; font-size:14px;
+  animation:kfin .18s ease-out; }
+.kf b { color:#e8b93c; } .kf .hs { color:#ff5b5b; font-weight:700; }
+.kf .pts { color:#7ddc7d; font-weight:700; }
+@keyframes kfin { from { transform:translateX(24px); opacity:0; } }
+
+/* 中央訊息 */
+#center-msg { position:absolute; left:50%; top:26%; transform:translateX(-50%);
+  font-size:30px; font-weight:800; color:#fff; letter-spacing:3px;
+  text-shadow:0 0 12px rgba(232,185,60,.7), 0 2px 4px #000; white-space:nowrap; }
+
+/* 提示 */
+#hint { position:absolute; left:50%; bottom:8px; transform:translateX(-50%);
+  font-size:12px; color:rgba(180,198,216,.55); letter-spacing:1px; }
+
+/* 記分板 */
+#scoreboard { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  min-width:420px; background:rgba(8,13,20,.92); border:1px solid rgba(232,185,60,.4);
+  border-radius:8px; padding:22px 30px; color:#dfe9f2; }
+.sb-title { font-size:18px; font-weight:700; color:#e8b93c; letter-spacing:2px;
+  margin-bottom:14px; text-align:center; }
+#sb-body table { width:100%; border-collapse:collapse; font-size:15px; }
+#sb-body td { padding:6px 10px; border-bottom:1px solid rgba(120,160,200,.12); }
+#sb-body td:last-child { text-align:right; font-weight:700; color:#fff;
+  font-variant-numeric:tabular-nums; }
+
+#fps { position:absolute; right:8px; top:2px; font-size:11px; color:rgba(160,180,200,.5);
+  font-variant-numeric:tabular-nums; }
+
+/* ---------- 選單 ---------- */
+#menu, #pause, #help-panel, #settings { position:fixed; inset:0; z-index:50;
+  display:flex; align-items:center; justify-content:center; }
+#menu { background:linear-gradient(180deg, rgba(6,10,16,.25) 0%, rgba(6,10,16,.78) 100%); }
+#pause, #help-panel, #settings { background:rgba(5,8,13,.72); backdrop-filter:blur(3px); }
+.menu-inner, .panel-inner { display:flex; flex-direction:column; align-items:center; gap:14px;
+  padding:40px 60px; background:rgba(8,13,20,.82); border:1px solid rgba(232,185,60,.35);
+  border-radius:10px; box-shadow:0 12px 60px rgba(0,0,0,.6); }
+.game-logo { font-size:56px; font-weight:900; color:#e8b93c; letter-spacing:8px;
+  text-shadow:0 0 24px rgba(232,185,60,.35); }
+.game-logo.small { font-size:36px; }
+.game-sub { font-size:20px; color:#dfe9f2; letter-spacing:14px; margin-top:-8px; }
+.menu-desc { font-size:13px; color:#8fa3b8; letter-spacing:1px; margin-bottom:8px; }
+.menu-foot { margin-top:10px; font-size:12px; color:#66798d; }
+.mbtn { width:260px; padding:12px 0; font-size:17px; font-weight:700; letter-spacing:4px;
+  color:#e8eef5; background:rgba(30,42,58,.85); border:1px solid rgba(140,170,205,.4);
+  border-radius:5px; cursor:pointer; transition:all .12s; font-family:inherit; }
+.mbtn:hover { background:#e8b93c; color:#101720; border-color:#e8b93c;
+  box-shadow:0 0 18px rgba(232,185,60,.45); }
+.panel-title { font-size:26px; font-weight:800; color:#e8b93c; letter-spacing:4px; }
+.keys { border-collapse:collapse; font-size:14px; color:#cdd9e5; }
+.keys td { padding:6px 16px; border-bottom:1px solid rgba(120,160,200,.12); }
+.keys td:nth-child(odd) { color:#e8b93c; font-weight:700; text-align:right; }
+.help-tip { max-width:460px; font-size:13px; color:#8fa3b8; line-height:1.6; text-align:center; }
+.set-row { display:flex; align-items:center; gap:14px; width:380px; color:#cdd9e5; font-size:15px; }
+.set-row label { width:110px; }
+.set-row input[type=range] { flex:1; accent-color:#e8b93c; }
+.set-row select { background:#1e2a3a; color:#e8eef5; border:1px solid rgba(140,170,205,.4);
+  padding:5px 10px; border-radius:4px; font-family:inherit; }
+.set-row span { width:44px; text-align:right; font-variant-numeric:tabular-nums; }
+.set-row input[type=checkbox] { width:18px; height:18px; accent-color:#e8b93c; }
