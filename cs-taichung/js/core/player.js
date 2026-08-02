@@ -6,6 +6,8 @@ window.Player = (function () {
   var vel = null;          // 垂直速度只用 y；水平直接依輸入
   var eyeH = CFG.EYE_STAND;
   var stepAcc = 0;         // 腳步聲距離累積
+  // 車站前廣場靠逢甲夜市入口一側，出生時朝向台中車站正面。
+  var SPAWN = { x: 50, y: 0, z: 10, lookX: 78, lookZ: 0 };
 
   var api = {
     pos: null,             // 腳底位置 Vector3
@@ -16,11 +18,24 @@ window.Player = (function () {
 
   api.init = function (cam) {
     camera = cam;
-    api.pos = new THREE.Vector3(-12, 0, 34);
-    api.yaw = Math.PI * 0.5;   // 面向 -X（公園靶場方向）
-    api.pitch = 0;
+    api.pos = new THREE.Vector3();
     vel = new THREE.Vector3();
     camera.rotation.order = 'YXZ';
+    api.resetSpawn();
+  };
+
+  api.resetSpawn = function () {
+    api.pos.set(SPAWN.x, SPAWN.y, SPAWN.z);
+    api.yaw = Math.atan2(-(SPAWN.lookX - SPAWN.x), -(SPAWN.lookZ - SPAWN.z));
+    api.pitch = 0;
+    api.crouching = false;
+    api.grounded = true;
+    api.sprinting = false;
+    api.moving = false;
+    api.speed = 0;
+    eyeH = CFG.EYE_STAND;
+    stepAcc = 0;
+    if (vel) vel.set(0, 0, 0);
     syncCamera();
   };
 
@@ -76,12 +91,15 @@ window.Player = (function () {
     eyeH = U.lerp(eyeH, targetEye, Math.min(1, dt * 10));
 
     // 移動輸入
-    var fx = 0, fz = 0;
+    var fx = Input.moveX, fz = Input.moveY;
     if (Input.key('KeyW')) fz -= 1;
     if (Input.key('KeyS')) fz += 1;
     if (Input.key('KeyA')) fx -= 1;
     if (Input.key('KeyD')) fx += 1;
-    var has = fx !== 0 || fz !== 0;
+    fx = U.clamp(fx, -1, 1);
+    fz = U.clamp(fz, -1, 1);
+    var inputAmount = Math.min(1, Math.sqrt(fx * fx + fz * fz));
+    var has = inputAmount > 0.01;
     api.sprinting = Input.key('ShiftLeft') && fz < 0 && !api.crouching;
     var spd = api.crouching ? CFG.CROUCH_SPEED : (api.sprinting ? CFG.SPRINT : CFG.WALK);
 
@@ -92,10 +110,10 @@ window.Player = (function () {
       var sin = Math.sin(api.yaw), cos = Math.cos(api.yaw);
       // 將本地 WASD 方向依相機 yaw 旋轉到世界座標。
       // Three.js 的相機朝本地 -Z；yaw 為正時，前方會轉向 -X。
-      mvx = (fx * cos + fz * sin) * spd;
-      mvz = (fz * cos - fx * sin) * spd;
+      mvx = (fx * cos + fz * sin) * spd * inputAmount;
+      mvz = (fz * cos - fx * sin) * spd * inputAmount;
     }
-    api.speed = has ? spd : 0;
+    api.speed = has ? spd * inputAmount : 0;
     api.moving = has;
 
     var p = api.pos;

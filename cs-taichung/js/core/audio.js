@@ -2,7 +2,7 @@
 window.AudioSys = (function () {
   'use strict';
 
-  var ctx = null, master = null, noiseBuf = null, ambOn = false;
+  var ctx = null, master = null, noiseBuf = null;
 
   function ensure() {
     if (ctx) return true;
@@ -107,30 +107,6 @@ window.AudioSys = (function () {
     if (!ctx || ctx.state !== 'running') return;
     var fn = sounds[name];
     if (fn) fn((opts && opts.dist) || 0);
-  };
-
-  // 城市環境底噪：風 + 遠處車流低鳴
-  api.ambience = function () {
-    if (!ensure() || ambOn) return;
-    ambOn = true;
-    var t = ctx.currentTime;
-    var src = ctx.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
-    var f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 220;
-    var g = ctx.createGain(); g.gain.value = 0.055;
-    src.connect(f); f.connect(g); g.connect(master);
-    src.start(t);
-    // 風聲起伏
-    var lfo = ctx.createOscillator(); lfo.frequency.value = 0.09;
-    var lg = ctx.createGain(); lg.gain.value = 0.02;
-    lfo.connect(lg); lg.connect(g.gain);
-    lfo.start(t);
-    // 高頻微風
-    var src2 = ctx.createBufferSource(); src2.buffer = noiseBuf; src2.loop = true;
-    src2.playbackRate.value = 0.55;
-    var f2 = ctx.createBiquadFilter(); f2.type = 'bandpass'; f2.frequency.value = 900; f2.Q.value = 0.6;
-    var g2 = ctx.createGain(); g2.gain.value = 0.012;
-    src2.connect(f2); f2.connect(g2); g2.connect(master);
-    src2.start(t);
   };
 
   return api;

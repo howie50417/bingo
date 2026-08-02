@@ -2,7 +2,11 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="screen-orientation" content="landscape">
+<meta name="x5-orientation" content="landscape">
+<meta name="theme-color" content="#0c0f14">
+<link rel="manifest" href="manifest.webmanifest">
 <title>CS:TAICHUNG 台中訓練場</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -66,6 +70,31 @@
     <div id="sb-body"></div>
   </div>
   <div id="fps">60 FPS</div>
+
+  <!-- 手機觸控操作 -->
+  <div id="mobile-controls" aria-label="手機遊戲控制">
+    <div id="move-stick" class="touch-stick" aria-label="移動搖桿">
+      <div class="stick-ring"></div>
+      <div id="move-knob" class="stick-knob"></div>
+    </div>
+    <button class="touch-btn sprint-btn" data-key="ShiftLeft" aria-label="衝刺">衝刺</button>
+    <div id="look-zone-label">滑動瞄準</div>
+    <button class="touch-btn weapon-btn" data-key="KeyQ" aria-label="切換武器">切槍</button>
+    <button class="touch-btn crouch-btn" data-key="KeyC" aria-label="蹲下">蹲</button>
+    <button class="touch-btn reload-btn" data-key="KeyR" aria-label="換彈">換彈</button>
+    <button class="touch-btn jump-btn" data-key="Space" aria-label="跳躍">跳</button>
+    <button class="touch-btn aim-btn" data-mouse="2" aria-label="開鏡或重擊">瞄準</button>
+    <button class="touch-btn fire-btn" data-mouse="0" aria-label="射擊">射擊</button>
+    <button id="touch-pause" class="touch-btn pause-btn" aria-label="暫停">Ⅱ</button>
+  </div>
+</div>
+
+<!-- 手機直向時阻擋操作，瀏覽器不支援鎖定方向時仍可引導旋轉 -->
+<div id="rotate-device" role="dialog" aria-label="請旋轉手機">
+  <div class="rotate-phone" aria-hidden="true"><span></span></div>
+  <div class="rotate-title">請將手機轉為橫向</div>
+  <div class="rotate-text">本遊戲僅支援橫向操作</div>
+  <button id="btn-landscape" type="button">切換橫向全螢幕</button>
 </div>
 
 <!-- 主選單 -->
@@ -95,6 +124,7 @@
       <tr><td>Tab</td><td>記分板</td><td>Esc</td><td>暫停</td></tr>
     </table>
     <div class="help-tip">目標：公園靶場人形靶（爆頭高分）、鋼靶、玻璃瓶、氣球、夜市移動靶與彈出靶。</div>
+    <div class="mobile-help">手機：左搖桿移動、右側空白處滑動瞄準，使用畫面按鈕射擊與操作。</div>
     <button id="btn-help-back" class="mbtn">返回</button>
   </div>
 </div>
@@ -115,7 +145,7 @@
   <div class="panel-inner">
     <div class="panel-title">設定</div>
     <div class="set-row"><label>滑鼠靈敏度</label><input id="set-sens" type="range" min="0.2" max="3" step="0.05" value="1"><span id="set-sens-v">1.00</span></div>
-    <div class="set-row"><label>音量</label><input id="set-vol" type="range" min="0" max="1" step="0.05" value="0.8"><span id="set-vol-v">0.80</span></div>
+    <div class="set-row"><label>遊戲音效</label><input id="set-vol" type="range" min="0" max="1" step="0.05" value="0.8"><span id="set-vol-v">0.80</span></div>
     <div class="set-row"><label>畫質</label>
       <select id="set-quality"><option value="high">高（陰影）</option><option value="low">低（流暢）</option></select>
     </div>
@@ -128,6 +158,7 @@
 <script src="js/config.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/core/input.js"></script>
+<script src="js/ui/mobile.js"></script>
 <script src="js/core/audio.js"></script>
 <script src="js/world/textures.js"></script>
 <script src="js/world/effects.js"></script>

@@ -1,0 +1,9 @@
+{
+  "name": "CS:TAICHUNG 台中訓練場",
+  "short_name": "CS:TAICHUNG",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0c0f14",
+  "theme_color": "#0c0f14"
+}

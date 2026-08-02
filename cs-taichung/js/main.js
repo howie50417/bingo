@@ -26,6 +26,7 @@ window.Game = (function () {
     window.addEventListener('resize', onResize);
 
     Input.init(G.canvas);
+    MobileControls.init(G.canvas);
     FX.init(G.scene);
     City.build();
     Props.build();
@@ -64,16 +65,18 @@ window.Game = (function () {
 
   api.start = function () {
     G.state = 'playing';
+    Player.resetSpawn();
     Menu.show(null);
     document.getElementById('hud').classList.remove('hidden');
     AudioSys.unlock();
-    AudioSys.ambience();
+    MobileControls.enterGame();
     Input.requestLock();
   };
 
   api.pause = function () {
     if (G.state !== 'playing') return;
     G.state = 'paused';
+    MobileControls.pause();
     Menu.show('pause');
     Input.exitLock();
   };
@@ -81,6 +84,7 @@ window.Game = (function () {
   api.resume = function () {
     G.state = 'playing';
     Menu.show(null);
+    MobileControls.enterGame();
     Input.requestLock();
   };
 
@@ -88,6 +92,7 @@ window.Game = (function () {
     G.state = 'menu';
     Menu.show('main');
     document.getElementById('hud').classList.add('hidden');
+    MobileControls.exitGame();
     Input.exitLock();
   };
 
